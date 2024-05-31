@@ -26,7 +26,7 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
                 Database db = new Database();
                 try {
-                    db.createdb(Config.Log.dbPath);
+                    db.createdb(Config.Log.getdbPath());
                 } catch (SQLException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
@@ -49,7 +49,7 @@ public class Main {
         mainMenuBar.add(fileMenu);
         mainFrame.setJMenuBar(mainMenuBar);
 
-        mainFrame.setSize(Config.MainFrame.sizeX, Config.MainFrame.sizeY);
+        mainFrame.setSize(Config.MainFrame.getSizeX(), Config.MainFrame.getSizeY());
         mainFrame.setTitle("LetLog");
         mainFrame.setLayout(null);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
