@@ -8,8 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class Database {
-
-    private String dbPath = "jdbc:sqlite:"+Config.Log.getdbPath();
+    
+    private String dbPath = "jdbc:sqlite:" + Config.Log.getdbPath();
 
     public void createdb() throws SQLException {
 
@@ -32,7 +32,8 @@ public class Database {
 
         conn.setAutoCommit(false);
 
-        System.err.println("Importing " + calls.size() + " records");
+        //System.err.println("Importing " + calls.size() + " records");
+    
         for(int i = 0; i<calls.size(); i++) {
 
             pstmt.setString(1, calls.get(i));
@@ -46,7 +47,7 @@ public class Database {
         }
         pstmt.executeBatch();
         conn.commit();
-        System.err.println("Finished");
+        //System.err.println("Finished");
         
     }
 }

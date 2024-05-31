@@ -1,5 +1,7 @@
 package com.leo;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -12,11 +14,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.BevelBorder;
 
 import org.marsik.ham.adif.AdiReader;
 import org.marsik.ham.adif.Adif3;
@@ -26,14 +33,18 @@ public class Main {
     static JFrame mainFrame = new JFrame();
 
     public static void main(String[] args) {
-        /*
-        Database db = new Database();
+        
+        /*Database db = new Database();
         try {
             db.createdb();
         } catch (SQLException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }*/
+
+        mainFrame.setSize(Config.MainFrame.getSizeX(), Config.MainFrame.getSizeY());
+        mainFrame.setTitle("LetLog");
+        mainFrame.setLayout(new BorderLayout());
 
         JMenuBar mainMenuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
@@ -45,9 +56,16 @@ public class Main {
         mainMenuBar.add(fileMenu);
         mainFrame.setJMenuBar(mainMenuBar);
 
-        mainFrame.setSize(Config.MainFrame.getSizeX(), Config.MainFrame.getSizeY());
-        mainFrame.setTitle("LetLog");
-        mainFrame.setLayout(null);
+        JPanel statusPanel = new JPanel(); 
+        statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        statusPanel.setPreferredSize(new Dimension(mainFrame.getWidth(), 18));
+        statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
+        mainFrame.add(statusPanel, BorderLayout.SOUTH);
+
+        JLabel statusLabel = new JLabel();
+        statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        statusPanel.add(statusLabel);
+
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setVisible(true);
 
@@ -64,7 +82,7 @@ public class Main {
                 if(fileChooser.showOpenDialog(mainFrame) != JFileChooser.APPROVE_OPTION) {
                     return;
                 }
-
+                
                 Reader adiFileReader;
                 try {
                     adiFileReader = new FileReader(fileChooser.getSelectedFile());
@@ -99,6 +117,7 @@ public class Main {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
+                statusLabel.setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
 
             }
         });
