@@ -7,7 +7,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.swing.JFileChooser;
@@ -15,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.xml.crypto.Data;
 
 import org.marsik.ham.adif.AdiReader;
 import org.marsik.ham.adif.Adif3;
@@ -24,6 +27,14 @@ public class Main {
     static JFrame mainFrame = new JFrame();
 
     public static void main(String[] args) {
+        /*
+        Database db = new Database();
+        try {
+            db.createdb();
+        } catch (SQLException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }*/
 
         JMenuBar mainMenuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
@@ -41,6 +52,8 @@ public class Main {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setVisible(true);
 
+        // IMPORTING ADIF ###############################################################
+
         fileMenuImportAdif.addActionListener(new ActionListener() {
 
             @Override
@@ -52,35 +65,42 @@ public class Main {
                 if(fileChooser.showOpenDialog(mainFrame) != JFileChooser.APPROVE_OPTION) {
                     return;
                 }
-                File importAdifPath = fileChooser.getSelectedFile();
-                System.err.println(importAdifPath.toString());
 
-                AdiReader reader = new AdiReader();
-                BufferedReader buffInput;
+                Reader adiFileReader;
                 try {
-                    buffInput = new BufferedReader(new FileReader(importAdifPath));
+                    adiFileReader = new FileReader(fileChooser.getSelectedFile());
                 } catch (FileNotFoundException e1) {
                     e1.printStackTrace();
                     return;
                 }
 
+                AdiReader adiReader = new AdiReader();
+                BufferedReader buffInput = new BufferedReader(adiFileReader);
+
                 Optional<Adif3> adif;
                 try {
-                    adif = reader.read(buffInput);
+                    adif = adiReader.read(buffInput);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                     return;
                 }
 
-                System.err.println(adif.get().getRecords());
+                ArrayList<String> calls = new ArrayList<>();
 
-                /*Database db = new Database();
+                for (int i = 0; i < (adif.get().getRecords().size()); i++) {
+                    
+                    calls.add(adif.get().getRecords().get(i).getCall());
+
+                }
+
+                Database dbc = new Database();
                 try {
-                    db.createdb(Config.Log.getdbPath());
+                    dbc.insertData(calls);
                 } catch (SQLException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
-                }*/
+                }
+
             }
         });
 

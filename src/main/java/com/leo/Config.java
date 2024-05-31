@@ -16,6 +16,9 @@ public class Config {
     }
 
     public class Log {
+        public static void setdbPath(String path) {
+            dbPath = path;
+        }
         public static String getdbPath() {
             return dbPath;
         }
