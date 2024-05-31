@@ -13,4 +13,40 @@
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.1.0-alpha1</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.1.0-alpha1</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.46.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.marsik.ham</groupId>
+            <artifactId>adif</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+        
+    </dependencies>
 </project>
