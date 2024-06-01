@@ -3,11 +3,11 @@ package com.leo;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.Reader;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,6 +26,9 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 
+import org.apache.commons.configuration2.INIConfiguration;
+import org.apache.commons.configuration2.builder.fluent.Configurations;
+
 import org.marsik.ham.adif.AdiReader;
 import org.marsik.ham.adif.Adif3;
 
@@ -36,27 +39,50 @@ public class Main {
 
     public static void main(String[] args) {
         
-        /*Database db = new Database();
+        /* 
+        Database db = new Database();
         try {
             db.createdb();
-        } catch (SQLException e1) {
+        } catch (SQLException e1) {}
+        */
+
+        /* 
+        try (FileReader reader = new FileReader("letlog.conf");) {
+            Properties p = new Properties();
+            p.load(reader);
+            System.err.println(p.getProperty("databasePath"));
+        } catch (Exception e) {
             // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }*/
+        }
+        */
+
+        Configurations configs = new Configurations();
+        
+        try {
+            INIConfiguration config = configs.ini(new File("./letlog.conf"));
+            String dbpath = config.getString("Log.databasePath");
+            System.err.println(dbpath);
+        } catch (Exception e) {}
 
         initializeMainFrame();
         createMenuBar();
         createStatusPanel();
         createCenterPanel();
         
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        mainFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                exit();
+            }
+        });
         mainFrame.setVisible(true);
 
     }
 
     private static void initializeMainFrame() {
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            if (Config.MainFrame.getLookAndFeel() == "system") { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
+            else { UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName()); }
         } catch (Exception e) {};
 
         mainFrame.setSize(Config.MainFrame.getSizeX(), Config.MainFrame.getSizeY());
@@ -68,7 +94,7 @@ public class Main {
         JPanel centerJPanel = new JPanel();
         centerJPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
         JButton jb1 = new JButton("Test");
-        jb1.setLayout(null);
+        jb1.setFocusPainted(false);
         centerJPanel.add(jb1);
         mainFrame.add(centerJPanel, BorderLayout.CENTER);
     }
@@ -112,8 +138,7 @@ public class Main {
         Reader adiFileReader;
         try {
             adiFileReader = new FileReader(fileChooser.getSelectedFile());
-        } catch (FileNotFoundException e1) {
-            e1.printStackTrace();
+        } catch (Exception e1) {
             return;
         }
 
@@ -123,8 +148,7 @@ public class Main {
         Optional<Adif3> adif;
         try {
             adif = adiReader.read(buffInput);
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        } catch (Exception e1) {
             return;
         }
 
@@ -140,15 +164,16 @@ public class Main {
         try {
             dbc.insertData(calls);
         } catch (SQLException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            statusLabel.setText("ADIF Import failed: " + e1);
+            return;
         }
         statusLabel.setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
 
     }
-
+    
     static void exit() {
        mainFrame.dispose();
+       System.exit(0);
     }
 
 }
