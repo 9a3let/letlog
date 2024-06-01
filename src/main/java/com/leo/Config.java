@@ -14,6 +14,12 @@ public class Config {
         public static int getSizeY() {
             return sizeY;
         }
+        public static void setSizeX(int size) {
+            sizeX = size;
+        }
+        public static void setSizeY(int size) {
+            sizeY = size;
+        }
         public static String getLookAndFeel() {
             return lookAndFeel;
         }

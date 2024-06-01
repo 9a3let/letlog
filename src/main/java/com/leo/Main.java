@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -38,7 +39,6 @@ public class Main {
     private static JLabel statusLabel = new JLabel();
 
     public static void main(String[] args) {
-        
         /* 
         Database db = new Database();
         try {
@@ -46,23 +46,27 @@ public class Main {
         } catch (SQLException e1) {}
         */
 
-        /* 
-        try (FileReader reader = new FileReader("letlog.conf");) {
-            Properties p = new Properties();
-            p.load(reader);
-            System.err.println(p.getProperty("databasePath"));
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-        }
-        */
-
         Configurations configs = new Configurations();
         
         try {
             INIConfiguration config = configs.ini(new File("./letlog.conf"));
-            String dbpath = config.getString("Log.databasePath");
-            System.err.println(dbpath);
-        } catch (Exception e) {}
+            Config.Log.setdbPath(config.getString("General.databasePath"));
+            Config.MainFrame.setSizeX(config.getInt("Window.sizeX"));
+            Config.MainFrame.setSizeY(config.getInt("Window.sizeY"));
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(mainFrame, "Unable to read configuration file\n"+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        boolean dbExists = new File(Config.Log.getdbPath()).exists();
+        if(!dbExists) {
+            Database db = new Database();
+            try {
+                db.createdb();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(mainFrame, "Unable to create database\n"+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
 
         initializeMainFrame();
         createMenuBar();
@@ -164,7 +168,7 @@ public class Main {
         try {
             dbc.insertData(calls);
         } catch (SQLException e1) {
-            statusLabel.setText("ADIF Import failed: " + e1);
+            JOptionPane.showMessageDialog(mainFrame, "ADIF Import failed\n"+e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         statusLabel.setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
