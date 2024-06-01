@@ -39,15 +39,14 @@ public class Main {
     private static JLabel statusLabel = new JLabel();
 
     public static void main(String[] args) {
-        /* 
-        Database db = new Database();
-        try {
-            db.createdb();
-        } catch (SQLException e1) {}
-        */
 
         Configurations configs = new Configurations();
         
+        initializeMainFrame();
+        createMenuBar();
+        createStatusPanel();
+        createCenterPanel();
+
         try {
             INIConfiguration config = configs.ini(new File("./letlog.conf"));
             Config.Log.setdbPath(config.getString("General.databasePath"));
@@ -67,11 +66,6 @@ public class Main {
                 JOptionPane.showMessageDialog(mainFrame, "Unable to create database\n"+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
-
-        initializeMainFrame();
-        createMenuBar();
-        createStatusPanel();
-        createCenterPanel();
         
         mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainFrame.addWindowListener(new WindowAdapter() {
