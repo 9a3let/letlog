@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,6 +24,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 
 import org.marsik.ham.adif.AdiReader;
@@ -30,7 +32,8 @@ import org.marsik.ham.adif.Adif3;
 
 public class Main {
 
-    static JFrame mainFrame = new JFrame();
+    private static JFrame mainFrame = new JFrame();
+    private static JLabel statusLabel = new JLabel();
 
     public static void main(String[] args) {
         
@@ -42,10 +45,36 @@ public class Main {
             e1.printStackTrace();
         }*/
 
-        mainFrame.setSize(Config.MainFrame.getSizeX(), Config.MainFrame.getSizeY());
-        mainFrame.setTitle("LetLog");
-        mainFrame.setLayout(new BorderLayout());
+        initializeMainFrame();
+        createMenuBar();
+        createStatusPanel();
+        createCenterPanel();
+        
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setVisible(true);
 
+    }
+
+    private static void initializeMainFrame() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {};
+
+        mainFrame.setSize(Config.MainFrame.getSizeX(), Config.MainFrame.getSizeY());
+        mainFrame.setLayout(new BorderLayout());
+        mainFrame.setTitle("LetLog");
+    }
+
+    private static void createCenterPanel() {
+        JPanel centerJPanel = new JPanel();
+        centerJPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        JButton jb1 = new JButton("Test");
+        jb1.setLayout(null);
+        centerJPanel.add(jb1);
+        mainFrame.add(centerJPanel, BorderLayout.CENTER);
+    }
+
+    private static void createMenuBar() {
         JMenuBar mainMenuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
         JMenuItem fileMenuImportAdif = new JMenuItem("Import ADIF");
@@ -56,80 +85,66 @@ public class Main {
         mainMenuBar.add(fileMenu);
         mainFrame.setJMenuBar(mainMenuBar);
 
+        fileMenuImportAdif.addActionListener(e -> importAdif(e));
+        fileMenuExit.addActionListener(e -> exit());
+
+    }
+
+    private static void createStatusPanel() {
         JPanel statusPanel = new JPanel(); 
         statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
         statusPanel.setPreferredSize(new Dimension(mainFrame.getWidth(), 18));
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
         mainFrame.add(statusPanel, BorderLayout.SOUTH);
 
-        JLabel statusLabel = new JLabel();
         statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
         statusPanel.add(statusLabel);
+    }
 
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setVisible(true);
+    private static void importAdif(ActionEvent e) {
 
-        // IMPORTING ADIF ###############################################################
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 
-        fileMenuImportAdif.addActionListener(new ActionListener() {
+        if(fileChooser.showOpenDialog(mainFrame) != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        
+        Reader adiFileReader;
+        try {
+            adiFileReader = new FileReader(fileChooser.getSelectedFile());
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+            return;
+        }
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        AdiReader adiReader = new AdiReader();
+        BufferedReader buffInput = new BufferedReader(adiFileReader);
 
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        Optional<Adif3> adif;
+        try {
+            adif = adiReader.read(buffInput);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            return;
+        }
 
-                if(fileChooser.showOpenDialog(mainFrame) != JFileChooser.APPROVE_OPTION) {
-                    return;
-                }
-                
-                Reader adiFileReader;
-                try {
-                    adiFileReader = new FileReader(fileChooser.getSelectedFile());
-                } catch (FileNotFoundException e1) {
-                    e1.printStackTrace();
-                    return;
-                }
+        ArrayList<String> calls = new ArrayList<>();
 
-                AdiReader adiReader = new AdiReader();
-                BufferedReader buffInput = new BufferedReader(adiFileReader);
-
-                Optional<Adif3> adif;
-                try {
-                    adif = adiReader.read(buffInput);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                    return;
-                }
-
-                ArrayList<String> calls = new ArrayList<>();
-
-                for (int i = 0; i < (adif.get().getRecords().size()); i++) {
-                    
-                    calls.add(adif.get().getRecords().get(i).getCall());
-
-                }
-
-                Database dbc = new Database();
-                try {
-                    dbc.insertData(calls);
-                } catch (SQLException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
-                statusLabel.setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
-
-            }
-        });
-
-        fileMenuExit.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                exit();
-            }
+        for (int i = 0; i < (adif.get().getRecords().size()); i++) {
             
-        });
+            calls.add(adif.get().getRecords().get(i).getCall());
+
+        }
+
+        Database dbc = new Database();
+        try {
+            dbc.insertData(calls);
+        } catch (SQLException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        statusLabel.setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
 
     }
 
