@@ -49,7 +49,11 @@ public class Main {
 
         try {
             INIConfiguration config = configs.ini(new File("./letlog.conf"));
-            Config.Log.setdbPath(config.getString("General.databasePath"));
+            String dbpath = config.getString("General.databasePath");
+            if(dbpath == null) {
+                throw new Exception("Database path can not be null");
+            }
+            Config.Log.setdbPath(dbpath);
             Config.MainFrame.setSizeX(config.getInt("Window.sizeX"));
             Config.MainFrame.setSizeY(config.getInt("Window.sizeY"));
 
