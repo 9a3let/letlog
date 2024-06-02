@@ -32,6 +32,7 @@ import org.apache.commons.configuration2.builder.fluent.Configurations;
 
 import org.marsik.ham.adif.AdiReader;
 import org.marsik.ham.adif.Adif3;
+import org.marsik.ham.adif.Adif3Record;
 
 public class Main {
 
@@ -77,14 +78,13 @@ public class Main {
                 exit();
             }
         });
+        System.gc();
         mainFrame.setVisible(true);
-
     }
 
     private static void initializeMainFrame() {
         try {
-            if (Config.MainFrame.getLookAndFeel() == "system") { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
-            else { UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName()); }
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception e) {};
 
         mainFrame.setSize(Config.MainFrame.getSizeX(), Config.MainFrame.getSizeY());
@@ -114,7 +114,6 @@ public class Main {
 
         fileMenuImportAdif.addActionListener(e -> importAdif(e));
         fileMenuExit.addActionListener(e -> exit());
-
     }
 
     private static void createStatusPanel() {
@@ -153,24 +152,16 @@ public class Main {
         } catch (Exception e1) {
             return;
         }
-
-        ArrayList<String> calls = new ArrayList<>();
-
-        for (int i = 0; i < (adif.get().getRecords().size()); i++) {
-            
-            calls.add(adif.get().getRecords().get(i).getCall());
-
-        }
-
-        Database dbc = new Database();
+        
+        Database db = new Database();
         try {
-            dbc.insertData(calls);
-        } catch (SQLException e1) {
-            JOptionPane.showMessageDialog(mainFrame, "ADIF Import failed\n"+e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            db.importRecords(adif);
+        } catch (Exception e1) {
+            // TODO Auto-generated catch block
             return;
-        }
+        }     
+        System.gc();
         statusLabel.setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
-
     }
     
     static void exit() {

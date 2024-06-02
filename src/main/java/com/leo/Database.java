@@ -5,38 +5,54 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
+import org.marsik.ham.adif.Adif3;
 
 public class Database {
     
     private String dbPath = "jdbc:sqlite:" + Config.Log.getdbPath();
 
+    private String createColumns = "ID integer primary key, DATE_ON integer, TIME_ON integer, CALLSIGN string, SENT integer, RCVD integer";
+    private String columns = "DATE_ON, TIME_ON, CALLSIGN, SENT, RCVD";
+
     public void createdb() throws SQLException {
 
         Connection conn = DriverManager.getConnection(dbPath);  
 
-        String sql = "CREATE TABLE IF NOT EXISTS log(ID integer primary key, CALLSIGN)";
+        String sql = "CREATE TABLE IF NOT EXISTS log(" + createColumns + ")";
  
         Statement stmt = conn.createStatement();  
         stmt.execute(sql);
 
     }
 
-    public void insertData(ArrayList<String> calls) throws SQLException {
-        
-        String sql = "INSERT INTO log(CALLSIGN) VALUES(?)";
-        int batchSize = 1000;
+    public void importRecords(Optional<Adif3> adif) throws Exception {
 
+        String sql = "INSERT INTO log(" + columns + ") VALUES(?, ?, ?, ?, ?)";
+        int batchSize = 1000;
+        int recordCount = adif.get().getRecords().size();
+    
         Connection conn = DriverManager.getConnection(dbPath);  
         PreparedStatement pstmt = conn.prepareStatement(sql);
+        DateTimeFormatter formatter;
 
         conn.setAutoCommit(false);
-
-        //System.err.println("Importing " + calls.size() + " records");
     
-        for(int i = 0; i<calls.size(); i++) {
+        for(int i = 0; i<recordCount; i++) {
 
-            pstmt.setString(1, calls.get(i));
+            formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            pstmt.setString(1, adif.get().getRecords().get(i).getQsoDate().format(formatter)); // DATE ON 
+
+            formatter = DateTimeFormatter.ofPattern("HHmmss");
+            pstmt.setString(2, adif.get().getRecords().get(i).getTimeOn().format(formatter)); // TIME ON
+
+            pstmt.setString(3, adif.get().getRecords().get(i).getCall()); // CALLSIGN
+
+            pstmt.setString(4, adif.get().getRecords().get(i).getRstSent()); // SENT RST
+            pstmt.setString(5, adif.get().getRecords().get(i).getRstRcvd()); // RCVD RST
+
             pstmt.addBatch();
 
             if (i % batchSize == 0 && i != 0) {
@@ -47,7 +63,5 @@ public class Database {
         }
         pstmt.executeBatch();
         conn.commit();
-        //System.err.println("Finished");
-        
     }
 }
