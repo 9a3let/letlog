@@ -8,9 +8,7 @@ import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.Reader;
-import java.io.Writer;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -27,9 +25,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
-
-import org.apache.commons.configuration2.INIConfiguration;
-import org.apache.commons.configuration2.builder.fluent.Configurations;
 
 import org.marsik.ham.adif.AdiReader;
 import org.marsik.ham.adif.Adif3;
