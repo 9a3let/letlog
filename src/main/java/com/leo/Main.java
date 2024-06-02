@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.swing.BoxLayout;
@@ -32,7 +31,6 @@ import org.apache.commons.configuration2.builder.fluent.Configurations;
 
 import org.marsik.ham.adif.AdiReader;
 import org.marsik.ham.adif.Adif3;
-import org.marsik.ham.adif.Adif3Record;
 
 public class Main {
 
