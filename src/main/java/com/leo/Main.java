@@ -138,6 +138,8 @@ public class Main {
         try {
             adiFileReader = new FileReader(fileChooser.getSelectedFile());
         } catch (Exception e1) {
+            // TODO Exception
+            System.err.println(e1);
             return;
         }
 
@@ -148,6 +150,8 @@ public class Main {
         try {
             adif = adiReader.read(buffInput);
         } catch (Exception e1) {
+            // TODO Exception
+            System.err.println(e1);
             return;
         }
         
@@ -155,9 +159,18 @@ public class Main {
         try {
             db.importRecords(adif);
         } catch (Exception e1) {
-            // TODO Auto-generated catch block
+            // TODO Exception
+            System.err.println(e1);
             return;
-        }     
+        }
+
+        try {
+            adiFileReader.close();
+            buffInput.close();
+        } catch (Exception e1) {
+            // TODO Exception
+            System.err.println(e1);
+        }
         System.gc();
         statusLabel.setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
     }

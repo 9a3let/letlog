@@ -25,6 +25,7 @@ public class Database {
  
         Statement stmt = conn.createStatement();  
         stmt.execute(sql);
+        conn.close();
 
     }
 
@@ -63,5 +64,6 @@ public class Database {
         }
         pstmt.executeBatch();
         conn.commit();
+        conn.close();
     }
 }
