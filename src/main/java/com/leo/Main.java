@@ -76,7 +76,6 @@ public class Main {
                 exit();
             }
         });
-        System.gc();
         mainFrame.setVisible(true);
     }
 
@@ -134,45 +133,21 @@ public class Main {
             return;
         }
         
-        Reader adiFileReader;
-        try {
-            adiFileReader = new FileReader(fileChooser.getSelectedFile());
-        } catch (Exception e1) {
-            // TODO Exception
-            System.err.println(e1);
-            return;
-        }
-
         AdiReader adiReader = new AdiReader();
-        BufferedReader buffInput = new BufferedReader(adiFileReader);
-
-        Optional<Adif3> adif;
-        try {
-            adif = adiReader.read(buffInput);
-        } catch (Exception e1) {
-            // TODO Exception
-            System.err.println(e1);
-            return;
-        }
         
-        Database db = new Database();
-        try {
-            db.importRecords(adif);
-        } catch (Exception e1) {
-            // TODO Exception
-            System.err.println(e1);
-            return;
-        }
+        try(Reader adiFileReader = new FileReader(fileChooser.getSelectedFile());
+        BufferedReader buffInput = new BufferedReader(adiFileReader)) {
+            
+            Optional<Adif3> adif = adiReader.read(buffInput);
+            
+            Database db = new Database();
 
-        try {
-            adiFileReader.close();
-            buffInput.close();
+            db.importRecords(adif);
+
+            statusLabel.setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
         } catch (Exception e1) {
-            // TODO Exception
-            System.err.println(e1);
+            JOptionPane.showMessageDialog(mainFrame, "Unable to import ADIF\n"+e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-        System.gc();
-        statusLabel.setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
     }
     
     static void exit() {
