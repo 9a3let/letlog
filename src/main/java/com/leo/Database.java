@@ -13,7 +13,7 @@ import org.marsik.ham.adif.Adif3;
 import org.marsik.ham.adif.Adif3Record;
 
 public class Database {
-    
+
     private String dbPath = "jdbc:sqlite:" + Config.Log.getdbPath();
 
     private final String createColumns = "ID integer primary key, DATE_ON integer, TIME_ON integer, CALLSIGN string, SENT integer, RCVD integer";
@@ -23,8 +23,8 @@ public class Database {
 
         final String sql = "CREATE TABLE IF NOT EXISTS log(" + createColumns + ")";
 
-        try(Connection conn = DriverManager.getConnection(dbPath);
-            Statement stmt = conn.createStatement()) {  
+        try (Connection conn = DriverManager.getConnection(dbPath);
+                Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
         }
     }
@@ -35,17 +35,17 @@ public class Database {
         int batchSize = 1000;
         int recordCount = adif.get().getRecords().size();
         List<Adif3Record> records = adif.get().getRecords();
-    
-        try(Connection conn = DriverManager.getConnection(dbPath);   
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
-    
+
+        try (Connection conn = DriverManager.getConnection(dbPath);
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
             conn.setAutoCommit(false);
-        
-            for(int i = 0; i<recordCount; i++) {
 
-                pstmt.setString(1, records.get(i).getQsoDate().format(dateFormatter)); // DATE ON 
+            for (int i = 0; i < recordCount; i++) {
+
+                pstmt.setString(1, records.get(i).getQsoDate().format(dateFormatter)); // DATE ON
 
                 pstmt.setString(2, records.get(i).getTimeOn().format(timeFormatter)); // TIME ON
 

@@ -10,12 +10,15 @@ public class Config {
         public static int getSizeX() {
             return sizeX;
         }
+
         public static int getSizeY() {
             return sizeY;
         }
+
         public static void setSizeX(int size) {
             sizeX = size;
         }
+
         public static void setSizeY(int size) {
             sizeY = size;
         }
@@ -25,9 +28,10 @@ public class Config {
         public static void setdbPath(String path) {
             dbPath = path;
         }
+
         public static String getdbPath() {
             return dbPath;
         }
     }
-    
+
 }

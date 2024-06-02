@@ -40,7 +40,7 @@ public class Main {
     public static void main(String[] args) {
 
         Configurations configs = new Configurations();
-        
+
         initializeMainFrame();
         createMenuBar();
         createStatusPanel();
@@ -49,7 +49,7 @@ public class Main {
         try {
             INIConfiguration config = configs.ini(new File("./letlog.conf"));
             String dbpath = config.getString("General.databasePath");
-            if(dbpath == null) {
+            if (dbpath == null) {
                 throw new Exception("Database path can not be null");
             }
             Config.Log.setdbPath(dbpath);
@@ -57,19 +57,21 @@ public class Main {
             Config.MainFrame.setSizeY(config.getInt("Window.sizeY"));
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(mainFrame, "Unable to read configuration file\n"+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(mainFrame, "Unable to read configuration file\n" + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         boolean dbExists = new File(Config.Log.getdbPath()).exists();
-        if(!dbExists) {
+        if (!dbExists) {
             Database db = new Database();
             try {
                 db.createdb();
             } catch (SQLException e) {
-                JOptionPane.showMessageDialog(mainFrame, "Unable to create database\n"+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(mainFrame, "Unable to create database\n" + e.getMessage(), "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
-        
+
         mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -82,7 +84,9 @@ public class Main {
     private static void initializeMainFrame() {
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (Exception e) {};
+        } catch (Exception e) {
+        }
+        ;
 
         mainFrame.setSize(Config.MainFrame.getSizeX(), Config.MainFrame.getSizeY());
         mainFrame.setLayout(new BorderLayout());
@@ -114,7 +118,7 @@ public class Main {
     }
 
     private static void createStatusPanel() {
-        JPanel statusPanel = new JPanel(); 
+        JPanel statusPanel = new JPanel();
         statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
         statusPanel.setPreferredSize(new Dimension(mainFrame.getWidth(), 18));
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
@@ -129,30 +133,31 @@ public class Main {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 
-        if(fileChooser.showOpenDialog(mainFrame) != JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showOpenDialog(mainFrame) != JFileChooser.APPROVE_OPTION) {
             return;
         }
-        
+
         AdiReader adiReader = new AdiReader();
-        
-        try(Reader adiFileReader = new FileReader(fileChooser.getSelectedFile());
-        BufferedReader buffInput = new BufferedReader(adiFileReader)) {
-            
+
+        try (Reader adiFileReader = new FileReader(fileChooser.getSelectedFile());
+                BufferedReader buffInput = new BufferedReader(adiFileReader)) {
+
             Optional<Adif3> adif = adiReader.read(buffInput);
-            
+
             Database db = new Database();
 
             db.importRecords(adif);
 
             statusLabel.setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
         } catch (Exception e1) {
-            JOptionPane.showMessageDialog(mainFrame, "Unable to import ADIF\n"+e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(mainFrame, "Unable to import ADIF\n" + e1.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     static void exit() {
-       mainFrame.dispose();
-       System.exit(0);
+        mainFrame.dispose();
+        System.exit(0);
     }
 
 }
