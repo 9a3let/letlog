@@ -12,14 +12,20 @@ import lombok.Setter;
 
 public class Config {
 
-    //private static int sizeX = 850;
-    //private static int sizeY = 450;
+    // private static int sizeX = 850;
+    // private static int sizeY = 450;
     //
     private static String configPath = "./letlog.conf";
 
-    @Getter @Setter private static int mainFrameSizeX = 850;
-    @Getter @Setter private static int mainFrameSizeY = 850;
-    @Getter @Setter private static String dbPath = "./database.db";
+    @Getter
+    @Setter
+    private static int mainFrameSizeX = 850;
+    @Getter
+    @Setter
+    private static int mainFrameSizeY = 850;
+    @Getter
+    @Setter
+    private static String dbPath = "./database.db";
 
     public static void readConfigFile() throws Exception {
         Configurations configs = new Configurations();
