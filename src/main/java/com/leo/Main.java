@@ -8,7 +8,9 @@ import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.Reader;
+import java.io.Writer;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -39,29 +41,15 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Configurations configs = new Configurations();
-
-        initializeMainFrame();
-        createMenuBar();
-        createStatusPanel();
-        createCenterPanel();
-
         try {
-            INIConfiguration config = configs.ini(new File("./letlog.conf"));
-            String dbpath = config.getString("General.databasePath");
-            if (dbpath == null) {
-                throw new Exception("Database path can not be null");
-            }
-            Config.Log.setdbPath(dbpath);
-            Config.MainFrame.setSizeX(config.getInt("Window.sizeX"));
-            Config.MainFrame.setSizeY(config.getInt("Window.sizeY"));
-
+            Config.readConfigFile();
         } catch (Exception e) {
+            // TODO Exceptions...
             JOptionPane.showMessageDialog(mainFrame, "Unable to read configuration file\n" + e.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
 
-        boolean dbExists = new File(Config.Log.getdbPath()).exists();
+        boolean dbExists = new File(Config.getDbPath()).exists();
         if (!dbExists) {
             Database db = new Database();
             try {
@@ -71,6 +59,11 @@ public class Main {
                         JOptionPane.ERROR_MESSAGE);
             }
         }
+
+        initializeMainFrame();
+        createMenuBar();
+        createStatusPanel();
+        createCenterPanel();
 
         mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainFrame.addWindowListener(new WindowAdapter() {
@@ -86,9 +79,8 @@ public class Main {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception e) {
         }
-        ;
 
-        mainFrame.setSize(Config.MainFrame.getSizeX(), Config.MainFrame.getSizeY());
+        mainFrame.setSize(Config.getMainFrameSizeX(), Config.getMainFrameSizeY());
         mainFrame.setLayout(new BorderLayout());
         mainFrame.setTitle("LetLog");
     }
@@ -156,6 +148,17 @@ public class Main {
     }
 
     static void exit() {
+        Config.setMainFrameSizeX(mainFrame.getWidth());
+        Config.setMainFrameSizeY(mainFrame.getHeight());
+
+        try {
+            Config.writeConfigFile();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(mainFrame, "Unable to write configuration file\n" + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+
+        }
+
         mainFrame.dispose();
         System.exit(0);
     }

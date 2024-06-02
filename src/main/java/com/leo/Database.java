@@ -14,7 +14,7 @@ import org.marsik.ham.adif.Adif3Record;
 
 public class Database {
 
-    private String dbPath = "jdbc:sqlite:" + Config.Log.getdbPath();
+    private String dbPath = "jdbc:sqlite:" + Config.getDbPath();
 
     private final String createColumns = "ID integer primary key, DATE_ON integer, TIME_ON integer, CALLSIGN string, SENT integer, RCVD integer";
     private final String columns = "DATE_ON, TIME_ON, CALLSIGN, SENT, RCVD";
