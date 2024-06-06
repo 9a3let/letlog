@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,9 +21,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
+import javax.swing.table.DefaultTableModel;
 
 import org.marsik.ham.adif.AdiReader;
 import org.marsik.ham.adif.Adif3;
@@ -33,6 +35,7 @@ public class Main {
 
     private static JFrame mainFrame = new JFrame();
     private static JLabel statusLabel = new JLabel();
+    public static DefaultTableModel mainTableModel = new DefaultTableModel();
 
     public static void main(String[] args) {
 
@@ -60,6 +63,10 @@ public class Main {
         createStatusPanel();
         createCenterPanel();
 
+        mainTableModel.addColumn("time on");
+        mainTableModel.addColumn("call");
+        //mainTableModel.addRow(new Object[] { "Data 1-1", "Data 1-2" });
+
         mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -71,22 +78,13 @@ public class Main {
 
     private static void initializeMainFrame() {
         try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
         }
 
         mainFrame.setSize(Config.getMainFrameSizeX(), Config.getMainFrameSizeY());
         mainFrame.setLayout(new BorderLayout());
         mainFrame.setTitle("LetLog");
-    }
-
-    private static void createCenterPanel() {
-        JPanel centerJPanel = new JPanel();
-        centerJPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        JButton jb1 = new JButton("Test");
-        jb1.setFocusPainted(false);
-        centerJPanel.add(jb1);
-        mainFrame.add(centerJPanel, BorderLayout.CENTER);
     }
 
     private static void createMenuBar() {
@@ -113,6 +111,18 @@ public class Main {
 
         statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
         statusPanel.add(statusLabel);
+    }
+
+    private static void createCenterPanel() {
+        JPanel centerJPanel = new JPanel();
+        JTable table = new JTable(mainTableModel);
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        centerJPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        centerJPanel.setLayout(new BorderLayout());
+
+        centerJPanel.add(scrollPane, BorderLayout.CENTER);
+        mainFrame.add(centerJPanel, BorderLayout.CENTER);
     }
 
     private static void importAdif(ActionEvent e) {
