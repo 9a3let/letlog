@@ -18,9 +18,9 @@ public class Database {
     private String dbPath = "jdbc:sqlite:" + Config.getDbPath();
 
     private final String createColumns = "ID integer primary key, DATE_ON integer, TIME_ON integer, CALLSIGN string, SENT integer, RCVD integer, "
-                                        + "MODE string, FREQ integer, GRIDSQUARE string, NAME string, CONTEST_ID string, COMMENT string, PROP_MODE string, "
-                                        + "STATE string";
-            
+            + "MODE string, FREQ integer, GRIDSQUARE string, NAME string, CONTEST_ID string, COMMENT string, PROP_MODE string, "
+            + "STATE string";
+
     private final String columns = "DATE_ON, TIME_ON, CALLSIGN, SENT, RCVD, MODE, FREQ, GRIDSQUARE, NAME, CONTEST_ID, COMMENT, PROP_MODE, STATE";
 
     public void createdb() throws SQLException {
@@ -36,14 +36,14 @@ public class Database {
     public void importRecords(Optional<Adif3> adif) throws Exception {
 
         final String sql = "INSERT INTO log(" + columns + ") VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
+
         try (Connection conn = DriverManager.getConnection(dbPath);
-        PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
             conn.setAutoCommit(false);
-            
+
             int batchSize = 1000;
             int recordCount = adif.get().getRecords().size();
             List<Adif3Record> records = adif.get().getRecords();
@@ -77,6 +77,10 @@ public class Database {
                     pstmt.executeBatch();
                     pstmt.clearBatch();
                 }
+
+                MainWindow.mainTableModel.addRow(new Object[] { record.getQsoDate(), record.getTimeOn(),
+                        record.getCall(), record.getRstSent(), record.getRstRcvd(), (long) (record.getFreq() * 1000),
+                        record.getMode().toString(), record.getComment() });
 
             }
             pstmt.executeBatch();

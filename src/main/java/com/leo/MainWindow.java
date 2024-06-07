@@ -2,6 +2,7 @@ package com.leo;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.BoxLayout;
@@ -20,14 +21,14 @@ import javax.swing.border.BevelBorder;
 import javax.swing.table.DefaultTableModel;
 
 public class MainWindow {
-    private static JFrame mainFrame = new JFrame();
+    public static JFrame mainFrame = new JFrame();
     public static JLabel statusLabel = new JLabel();
     public static DefaultTableModel mainTableModel = new DefaultTableModel();
 
     public MainWindow() {
 
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception e) {}
 
         
@@ -38,6 +39,15 @@ public class MainWindow {
         createMenuBar();
         createStatusPanel();
         createCenterPanel();
+
+        mainTableModel.addColumn("DATE");
+        mainTableModel.addColumn("TIME");
+        mainTableModel.addColumn("CALLSIGN");
+        mainTableModel.addColumn("RST TX");
+        mainTableModel.addColumn("RST RX");
+        mainTableModel.addColumn("FREQ");
+        mainTableModel.addColumn("MODE");
+        mainTableModel.addColumn("COMMENT");
 
         mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainFrame.addWindowListener(new WindowAdapter() {
@@ -82,6 +92,12 @@ public class MainWindow {
 
         centerJPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
         centerJPanel.setLayout(new BorderLayout());
+
+        table.setRowHeight(25);
+        table.setFont(new Font("Serif", Font.ROMAN_BASELINE, 20));
+        table.getTableHeader().setFont(new Font("Serif", Font.BOLD, 16));
+        
+        statusLabel.setText("LetLog started");
 
         centerJPanel.add(scrollPane, BorderLayout.CENTER);
         mainFrame.add(centerJPanel, BorderLayout.CENTER);

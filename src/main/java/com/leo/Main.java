@@ -21,9 +21,12 @@ public class Main {
             Config.readConfigFile();
         } catch (Exception e) {
             // TODO Exceptions...
-            JOptionPane.showMessageDialog(null, "Unable to read configuration file\n" + e.getMessage(), "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(MainWindow.mainFrame, "Unable to read configuration file\n" + e.getMessage(), "Error",
+            JOptionPane.ERROR_MESSAGE);
         }
+
+        new MainWindow();
+
 
         boolean dbExists = new File(Config.getDbPath()).exists();
         if (!dbExists) {
@@ -31,12 +34,12 @@ public class Main {
             try {
                 db.createdb();
             } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Unable to create database\n" + e.getMessage(), "Error",
+                JOptionPane.showMessageDialog(MainWindow.mainFrame, "Unable to create database\n" + e.getMessage(), "Error",
                         JOptionPane.ERROR_MESSAGE);
             }
         }
 
-        new MainWindow();
+        
 
     }
 
@@ -62,9 +65,10 @@ public class Main {
 
             MainWindow.statusLabel.setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
         } catch (Exception e1) {
-            JOptionPane.showMessageDialog(null, "Unable to import ADIF\n" + e1.getMessage(), "Error",
+            JOptionPane.showMessageDialog(MainWindow.mainFrame, "Unable to import ADIF\n" + e1.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
+        System.gc();
     }
 
 }
