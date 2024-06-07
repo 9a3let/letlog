@@ -11,13 +11,17 @@ import java.util.Optional;
 
 import org.marsik.ham.adif.Adif3;
 import org.marsik.ham.adif.Adif3Record;
+import org.marsik.ham.adif.enums.Propagation;
 
 public class Database {
 
     private String dbPath = "jdbc:sqlite:" + Config.getDbPath();
 
-    private final String createColumns = "ID integer primary key, DATE_ON integer, TIME_ON integer, CALLSIGN string, SENT integer, RCVD integer";
-    private final String columns = "DATE_ON, TIME_ON, CALLSIGN, SENT, RCVD";
+    private final String createColumns = "ID integer primary key, DATE_ON integer, TIME_ON integer, CALLSIGN string, SENT integer, RCVD integer, "
+                                        + "MODE string, FREQ integer, GRIDSQUARE string, NAME string, CONTEST_ID string, COMMENT string, PROP_MODE string, "
+                                        + "STATE string";
+            
+    private final String columns = "DATE_ON, TIME_ON, CALLSIGN, SENT, RCVD, MODE, FREQ, GRIDSQUARE, NAME, CONTEST_ID, COMMENT, PROP_MODE, STATE";
 
     public void createdb() throws SQLException {
 
@@ -31,28 +35,41 @@ public class Database {
 
     public void importRecords(Optional<Adif3> adif) throws Exception {
 
-        final String sql = "INSERT INTO log(" + columns + ") VALUES(?, ?, ?, ?, ?)";
-        int batchSize = 1000;
-        int recordCount = adif.get().getRecords().size();
-        List<Adif3Record> records = adif.get().getRecords();
-
+        final String sql = "INSERT INTO log(" + columns + ") VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
         try (Connection conn = DriverManager.getConnection(dbPath);
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
             conn.setAutoCommit(false);
+            
+            int batchSize = 1000;
+            int recordCount = adif.get().getRecords().size();
+            List<Adif3Record> records = adif.get().getRecords();
+
+            Adif3Record record;
+            Propagation prop;
 
             for (int i = 0; i < recordCount; i++) {
 
-                pstmt.setString(1, records.get(i).getQsoDate().format(dateFormatter)); // DATE ON
-
-                pstmt.setString(2, records.get(i).getTimeOn().format(timeFormatter)); // TIME ON
-
-                pstmt.setString(3, records.get(i).getCall()); // CALLSIGN
-
-                pstmt.setString(4, records.get(i).getRstSent()); // SENT RST
-                pstmt.setString(5, records.get(i).getRstRcvd()); // RCVD RST
+                record = records.get(i);
+                pstmt.setString(1, record.getQsoDate().format(dateFormatter)); // DATE ON
+                pstmt.setString(2, record.getTimeOn().format(timeFormatter)); // TIME ON
+                pstmt.setString(3, record.getCall()); // CALLSIGN
+                pstmt.setString(4, record.getRstSent()); // SENT RST
+                pstmt.setString(5, record.getRstRcvd()); // RCVD RST
+                pstmt.setString(6, record.getMode().toString()); // MODE
+                pstmt.setLong(7, (long) (record.getFreq() * 1000000)); // FREQUENCY
+                pstmt.setString(8, record.getGridsquare()); // GRID
+                pstmt.setString(9, record.getName()); // NAME
+                pstmt.setString(10, record.getContestId()); // CONTEST ID
+                pstmt.setString(11, record.getComment()); // COMMENT
+                prop = record.getPropMode();
+                if (prop != null) {
+                    pstmt.setString(12, prop.adifCode()); // PROPAGATION MODE
+                }
+                pstmt.setString(13, record.getState());
 
                 pstmt.addBatch();
 
