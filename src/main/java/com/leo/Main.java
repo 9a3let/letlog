@@ -35,7 +35,8 @@ public class Main {
                         JOptionPane.ERROR_MESSAGE);
             }
         }
-        new GUI();
+
+        new MainWindow();
 
     }
 
@@ -59,7 +60,7 @@ public class Main {
 
             db.importRecords(adif);
 
-            GUI.statusLabel.setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
+            MainWindow.statusLabel.setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
         } catch (Exception e1) {
             JOptionPane.showMessageDialog(null, "Unable to import ADIF\n" + e1.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);

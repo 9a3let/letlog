@@ -19,12 +19,12 @@ import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.DefaultTableModel;
 
-public class GUI {
+public class MainWindow {
     private static JFrame mainFrame = new JFrame();
     public static JLabel statusLabel = new JLabel();
     public static DefaultTableModel mainTableModel = new DefaultTableModel();
 
-    public GUI() {
+    public MainWindow() {
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
