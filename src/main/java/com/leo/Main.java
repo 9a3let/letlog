@@ -21,12 +21,12 @@ public class Main {
             Config.readConfigFile();
         } catch (Exception e) {
             // TODO Exceptions...
-            JOptionPane.showMessageDialog(MainWindow.mainFrame, "Unable to read configuration file\n" + e.getMessage(), "Error",
-            JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(MainWindow.mainFrame, "Unable to read configuration file\n" + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         new MainWindow();
-
 
         boolean dbExists = new File(Config.getDbPath()).exists();
         if (!dbExists) {
@@ -34,13 +34,20 @@ public class Main {
             try {
                 db.createdb();
             } catch (SQLException e) {
-                JOptionPane.showMessageDialog(MainWindow.mainFrame, "Unable to create database\n" + e.getMessage(), "Error",
+                JOptionPane.showMessageDialog(MainWindow.mainFrame, "Unable to create database\n" + e.getMessage(),
+                        "Error",
                         JOptionPane.ERROR_MESSAGE);
             }
         }
 
-        
-
+        try {
+            Database.insertRecordsIntoTable();
+            System.gc();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(MainWindow.mainFrame,
+                    "Unable to insert records into table\n" + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void importAdif() {
@@ -63,11 +70,22 @@ public class Main {
 
             db.importRecords(adif);
 
-            MainWindow.statusLabel.setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
+            MainWindow.statusLabel
+                    .setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
         } catch (Exception e1) {
             JOptionPane.showMessageDialog(MainWindow.mainFrame, "Unable to import ADIF\n" + e1.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
+
+        MainWindow.mainTableModel.setRowCount(0);
+        try {
+            Database.insertRecordsIntoTable();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(MainWindow.mainFrame,
+                    "Unable to insert records into table\n" + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
         System.gc();
     }
 

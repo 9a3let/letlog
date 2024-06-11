@@ -13,6 +13,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -24,6 +25,7 @@ public class MainWindow {
     public static JFrame mainFrame = new JFrame();
     public static JLabel statusLabel = new JLabel();
     public static DefaultTableModel mainTableModel = new DefaultTableModel();
+    private static JScrollPane scrollPane;
 
     public MainWindow() {
 
@@ -88,7 +90,7 @@ public class MainWindow {
     private static void createCenterPanel() {
         JPanel centerJPanel = new JPanel();
         JTable table = new JTable(mainTableModel);
-        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane = new JScrollPane(table);
 
         centerJPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
         centerJPanel.setLayout(new BorderLayout());
@@ -96,10 +98,10 @@ public class MainWindow {
         table.setRowHeight(25);
         table.setFont(new Font("Serif", Font.ROMAN_BASELINE, 20));
         table.getTableHeader().setFont(new Font("Serif", Font.BOLD, 16));
-        
-        statusLabel.setText("LetLog started");
 
-        centerJPanel.add(scrollPane, BorderLayout.CENTER);
+        scrollPane.setPreferredSize(new Dimension(scrollPane.getPreferredSize().width, table.getRowHeight()*10+3));
+        
+        centerJPanel.add(scrollPane, BorderLayout.NORTH);
         mainFrame.add(centerJPanel, BorderLayout.CENTER);
     }
 
@@ -117,6 +119,11 @@ public class MainWindow {
 
         mainFrame.dispose();
         System.exit(0);
+    }
+
+    public static void mainTableScrollToBottom () {
+        JScrollBar vertBar= scrollPane.getVerticalScrollBar();
+        vertBar.setValue(vertBar.getMaximum());
     }
 
 }

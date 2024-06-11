@@ -3,8 +3,11 @@ package com.leo;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -15,11 +18,11 @@ import org.marsik.ham.adif.enums.Propagation;
 
 public class Database {
 
-    private String dbPath = "jdbc:sqlite:" + Config.getDbPath();
+    private static String dbPath = "jdbc:sqlite:" + Config.getDbPath();
 
-    private final String createColumns = "ID integer primary key, DATE_ON integer, TIME_ON integer, CALLSIGN string, SENT integer, RCVD integer, "
-            + "MODE string, FREQ integer, GRIDSQUARE string, NAME string, CONTEST_ID string, COMMENT string, PROP_MODE string, "
-            + "STATE string";
+    private final String createColumns = "ID integer primary key, DATE_ON text, TIME_ON text, CALLSIGN text, SENT text, RCVD text, "
+            + "MODE text, FREQ integer, GRIDSQUARE text, NAME text, CONTEST_ID text, COMMENT text, PROP_MODE text, "
+            + "STATE text";
 
     private final String columns = "DATE_ON, TIME_ON, CALLSIGN, SENT, RCVD, MODE, FREQ, GRIDSQUARE, NAME, CONTEST_ID, COMMENT, PROP_MODE, STATE";
 
@@ -51,6 +54,9 @@ public class Database {
             Adif3Record record;
             Propagation prop;
 
+            record = records.get(10);
+            System.err.println(record.getTimeOn() + " - " + record.getTimeOn().format(timeFormatter));
+
             for (int i = 0; i < recordCount; i++) {
 
                 record = records.get(i);
@@ -60,7 +66,7 @@ public class Database {
                 pstmt.setString(4, record.getRstSent()); // SENT RST
                 pstmt.setString(5, record.getRstRcvd()); // RCVD RST
                 pstmt.setString(6, record.getMode().toString()); // MODE
-                pstmt.setLong(7, (long) (record.getFreq() * 1000000)); // FREQUENCY
+                pstmt.setLong(7, (long) (record.getFreq() * 1000000)); // FREQUENCY in Hz
                 pstmt.setString(8, record.getGridsquare()); // GRID
                 pstmt.setString(9, record.getName()); // NAME
                 pstmt.setString(10, record.getContestId()); // CONTEST ID
@@ -77,14 +83,53 @@ public class Database {
                     pstmt.executeBatch();
                     pstmt.clearBatch();
                 }
-
-                MainWindow.mainTableModel.addRow(new Object[] { record.getQsoDate(), record.getTimeOn(),
-                        record.getCall(), record.getRstSent(), record.getRstRcvd(), (long) (record.getFreq() * 1000),
-                        record.getMode().toString(), record.getComment() });
-
             }
             pstmt.executeBatch();
             conn.commit();
+        }
+    }
+
+    public static void insertRecordsIntoTable() throws Exception {
+        final String sql = "SELECT DATE_ON, TIME_ON, CALLSIGN, SENT, RCVD, FREQ, MODE, COMMENT FROM log";
+
+        try (Connection conn = DriverManager.getConnection(dbPath);
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
+
+            DateTimeFormatter inputDateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            DateTimeFormatter outputDateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+            LocalDate date;
+            String outputDate;
+
+            DateTimeFormatter inputTimeFormatter = DateTimeFormatter.ofPattern("HHmmss");
+            DateTimeFormatter outputTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            LocalTime time;
+            String outputTime;
+
+            float freq;
+
+            while (rs.next()) {
+
+                date = LocalDate.parse(rs.getString("DATE_ON"), inputDateFormatter);
+                outputDate = date.format(outputDateFormatter);
+
+                time = LocalTime.parse(rs.getString("TIME_ON"), inputTimeFormatter);
+                outputTime = time.format(outputTimeFormatter);
+
+                freq = Float.parseFloat(rs.getString("FREQ")) / 1000;
+
+                MainWindow.mainTableModel.addRow(new Object[] { 
+                    outputDate,
+                    outputTime,
+                    rs.getString("CALLSIGN"), 
+                    rs.getString("SENT"), 
+                    rs.getString("RCVD"), 
+                    freq,
+                    rs.getString("MODE"), 
+                    rs.getString("COMMENT") 
+                });
+            }
+            MainWindow.mainTableScrollToBottom();
         }
     }
 }
