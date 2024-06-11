@@ -54,9 +54,6 @@ public class Database {
             Adif3Record record;
             Propagation prop;
 
-            record = records.get(10);
-            System.err.println(record.getTimeOn() + " - " + record.getTimeOn().format(timeFormatter));
-
             for (int i = 0; i < recordCount; i++) {
 
                 record = records.get(i);
