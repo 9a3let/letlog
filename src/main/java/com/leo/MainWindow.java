@@ -13,7 +13,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -122,8 +121,8 @@ public class MainWindow {
     }
 
     public static void mainTableScrollToBottom () {
-        JScrollBar vertBar= scrollPane.getVerticalScrollBar();
-        vertBar.setValue(vertBar.getMaximum());
+        scrollPane.revalidate();
+        scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
     }
 
 }
