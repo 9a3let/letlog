@@ -41,7 +41,7 @@ public class Main {
         }
 
         try {
-            Database.insertRecordsIntoTable();
+            Database.loadRecordsIntoTable();
             System.gc();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(MainWindow.mainFrame,
@@ -79,7 +79,7 @@ public class Main {
 
         MainWindow.mainTableModel.setRowCount(0);
         try {
-            Database.insertRecordsIntoTable();
+            Database.loadRecordsIntoTable();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(MainWindow.mainFrame,
                     "Unable to insert records into table\n" + e.getMessage(), "Error",

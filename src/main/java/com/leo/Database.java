@@ -86,7 +86,7 @@ public class Database {
         }
     }
 
-    public static void insertRecordsIntoTable() throws Exception {
+    public static void loadRecordsIntoTable() throws Exception {
         final String sql = "SELECT DATE_ON, TIME_ON, CALLSIGN, SENT, RCVD, FREQ, MODE, COMMENT FROM log";
 
         try (Connection conn = DriverManager.getConnection(dbPath);

@@ -33,7 +33,6 @@ public class MainWindow {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception e) {}
 
-        
         mainFrame.setSize(Config.getMainFrameSizeX(), Config.getMainFrameSizeY());
         mainFrame.setLayout(new BorderLayout());
         mainFrame.setTitle("LetLog");
@@ -88,21 +87,23 @@ public class MainWindow {
     }
 
     private static void createCenterPanel() {
-        JPanel centerJPanel = new JPanel();
+        JPanel centerPanel = new JPanel();
         JTable table = new JTable(mainTableModel);
         scrollPane = new JScrollPane(table);
 
-        centerJPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        centerJPanel.setLayout(new BorderLayout());
+        PromptPanel promptPanel = new PromptPanel();
+
+        centerPanel.setLayout(new BorderLayout());
 
         table.setRowHeight(25);
-        table.setFont(new Font("Serif", Font.ROMAN_BASELINE, 20));
-        table.getTableHeader().setFont(new Font("Serif", Font.BOLD, 16));
+        table.setFont(new Font("Areal", Font.ROMAN_BASELINE, 18));
+        table.getTableHeader().setFont(new Font("Areal", Font.BOLD, 16));
 
-        scrollPane.setPreferredSize(new Dimension(scrollPane.getPreferredSize().width, table.getRowHeight()*10+3));
-        
-        centerJPanel.add(scrollPane, BorderLayout.NORTH);
-        mainFrame.add(centerJPanel, BorderLayout.CENTER);
+        centerPanel.add(scrollPane, BorderLayout.CENTER);
+        centerPanel.add(promptPanel, BorderLayout.SOUTH);
+
+        mainFrame.add(centerPanel, BorderLayout.CENTER);
+
     }
 
     static void exit() {
