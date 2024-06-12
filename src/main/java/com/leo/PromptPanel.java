@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -111,8 +112,6 @@ public class PromptPanel extends JPanel {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_ENTER:
                         logQso();
-                        wipe();
-                        callField.grabFocus();
                         break;
     
                     case KeyEvent.VK_SPACE:
@@ -135,8 +134,6 @@ public class PromptPanel extends JPanel {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_ENTER:
                         logQso();
-                        wipe();
-                        callField.grabFocus();
                         break;
                 }
             }
@@ -169,6 +166,23 @@ public class PromptPanel extends JPanel {
     }
 
     void logQso() {
+
+        if (callField.getText().isBlank()) {
+            JOptionPane.showMessageDialog(MainWindow.mainFrame, "Callsign filed cannot be empty!", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (sentField.getText().isBlank() || rcvdField.getText().isBlank()) {
+            JOptionPane.showMessageDialog(MainWindow.mainFrame, "Reports cannot be empty!", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (!realtimeCheckBox.isSelected() && (dateField.getText().isBlank() || timeField.getText().isBlank())) {
+            JOptionPane.showMessageDialog(MainWindow.mainFrame, "Date and/or time cannot be empty!", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         Adif3Record record = new Adif3Record();
 
         LocalDate date;
@@ -178,9 +192,16 @@ public class PromptPanel extends JPanel {
             date = LocalDate.now(ZoneOffset.UTC);
             time = LocalTime.now(ZoneOffset.UTC);
         } else {
-            date = LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-            time = LocalTime.parse(timeField.getText(), DateTimeFormatter.ofPattern("HH:mm"));
+            try {
+                date = LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+                time = LocalTime.parse(timeField.getText(), DateTimeFormatter.ofPattern("HH:mm"));
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(MainWindow.mainFrame, "Date/time error\n" + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         }
+
         record.setQsoDate(date);
         record.setTimeOn(time);
         record.setCall(callField.getText());
@@ -201,6 +222,8 @@ public class PromptPanel extends JPanel {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
+        wipe();
+        callField.grabFocus();
     }
 
     void wipe() {
