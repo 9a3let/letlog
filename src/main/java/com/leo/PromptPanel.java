@@ -191,7 +191,7 @@ public class PromptPanel extends JPanel {
         record.setName(nameField.getText());
 
         try {
-            Database.importRecord(record);
+            Database.saveRecord(record);
         } catch (Exception e1) {
             System.err.println(e1);
         }

@@ -44,12 +44,12 @@ public class Main {
         // loads records into table to be displayed
         try {
             Database.loadRecordsIntoTable();
-            System.gc();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(MainWindow.mainFrame,
                     "Unable to insert records into table\n" + e.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
+        System.gc();
     }
 
     // opens FileChooser to select ADI file and imports it into database
@@ -86,7 +86,5 @@ public class Main {
                     "Unable to insert records into table\n" + e.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
-
-        System.gc();
     }
 }

@@ -63,7 +63,7 @@ public class Database {
                 pstmt.setString(3, record.getCall()); // CALLSIGN
                 pstmt.setString(4, record.getRstSent()); // SENT RST
                 pstmt.setString(5, record.getRstRcvd()); // RCVD RST
-                pstmt.setString(6, record.toString()); // MODE
+                pstmt.setString(6, record.getMode().toString()); // MODE
                 pstmt.setLong(7, (long) (record.getFreq() * 1000000)); // FREQUENCY in Hz
                 pstmt.setString(8, record.getGridsquare()); // GRID
                 pstmt.setString(9, record.getName()); // NAME
@@ -87,9 +87,10 @@ public class Database {
             pstmt.executeBatch();
             conn.commit();
         }
+        System.gc();
     }
 
-    public static void importRecord(Adif3Record record) throws Exception {
+    public static void saveRecord(Adif3Record record) throws Exception {
         final String sql = "INSERT INTO log(" + columns + ") VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(dbPath);
@@ -120,6 +121,7 @@ public class Database {
             // writes to database
             pstmt.executeUpdate();
         }
+        System.gc();
     }
 
     // loads records into table(model)
@@ -166,6 +168,6 @@ public class Database {
             }
             MainWindow.mainTableScrollToBottom();
         }
+        System.gc();
     }
-
 }
