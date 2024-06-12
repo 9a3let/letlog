@@ -106,6 +106,7 @@ public class MainWindow {
 
     }
 
+    // updates Config and writes to config file before closing
     static void exit() {
         Config.setMainFrameSizeX(mainFrame.getWidth());
         Config.setMainFrameSizeY(mainFrame.getHeight());
@@ -122,6 +123,7 @@ public class MainWindow {
         System.exit(0);
     }
 
+    // scrolls table to bottom 
     public static void mainTableScrollToBottom () {
         SwingUtilities.invokeLater(new Runnable() {
             @Override

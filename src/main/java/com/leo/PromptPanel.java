@@ -25,7 +25,7 @@ public class PromptPanel extends JPanel {
         ((AbstractDocument) callField.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
         callPanel.add(callLabel, BorderLayout.PAGE_START);
         callPanel.add(callField, BorderLayout.PAGE_END);
-        
+
         // **************** SENT RST TEXTBOX ****************
         JPanel sentPanel = new JPanel(new BorderLayout());
         JLabel sentLabel = new JLabel("TX RST");
@@ -44,7 +44,7 @@ public class PromptPanel extends JPanel {
         rcvdField.setNextFocusableComponent(callField);
         rcvdPanel.add(rcvdLabel, BorderLayout.PAGE_START);
         rcvdPanel.add(rcvdField, BorderLayout.PAGE_END);
-        
+
         add(callPanel);
         add(sentPanel);
         add(rcvdPanel);
@@ -54,7 +54,8 @@ public class PromptPanel extends JPanel {
     // Custom DocumentFilter to convert input to uppercase
     static class UppercaseDocumentFilter extends DocumentFilter {
         @Override
-        public void insertString(FilterBypass fb, int offset, String text, AttributeSet attr) throws BadLocationException {
+        public void insertString(FilterBypass fb, int offset, String text, AttributeSet attr)
+                throws BadLocationException {
             if (text != null) {
                 text = text.toUpperCase();
             }
@@ -62,12 +63,13 @@ public class PromptPanel extends JPanel {
         }
 
         @Override
-        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+                throws BadLocationException {
             if (text != null) {
                 text = text.toUpperCase();
             }
             super.replace(fb, offset, length, text, attrs);
         }
     }
-    
+
 }

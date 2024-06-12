@@ -36,6 +36,7 @@ public class Database {
         }
     }
 
+    // imports records into database
     public void importRecords(Optional<Adif3> adif) throws Exception {
 
         final String sql = "INSERT INTO log(" + columns + ") VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -76,16 +77,19 @@ public class Database {
 
                 pstmt.addBatch();
 
+                // wirtes to database every 1000 records
                 if (i % batchSize == 0 && i != 0) {
                     pstmt.executeBatch();
                     pstmt.clearBatch();
                 }
             }
+            // writes to database
             pstmt.executeBatch();
             conn.commit();
         }
     }
 
+    // loads records into table(model)
     public static void loadRecordsIntoTable() throws Exception {
         final String sql = "SELECT DATE_ON, TIME_ON, CALLSIGN, SENT, RCVD, FREQ, MODE, COMMENT FROM log";
 
@@ -115,15 +119,15 @@ public class Database {
 
                 freq = Float.parseFloat(rs.getString("FREQ")) / 1000;
 
-                MainWindow.mainTableModel.addRow(new Object[] { 
-                    outputDate,
-                    outputTime,
-                    rs.getString("CALLSIGN"), 
-                    rs.getString("SENT"), 
-                    rs.getString("RCVD"), 
-                    freq,
-                    rs.getString("MODE"), 
-                    rs.getString("COMMENT") 
+                MainWindow.mainTableModel.addRow(new Object[] {
+                        outputDate,
+                        outputTime,
+                        rs.getString("CALLSIGN"),
+                        rs.getString("SENT"),
+                        rs.getString("RCVD"),
+                        freq,
+                        rs.getString("MODE"),
+                        rs.getString("COMMENT")
                 });
             }
             MainWindow.mainTableScrollToBottom();

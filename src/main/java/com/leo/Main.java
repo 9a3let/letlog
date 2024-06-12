@@ -17,6 +17,7 @@ public class Main {
 
     public static void main(String[] args) {
 
+        // reads config file
         try {
             Config.readConfigFile();
         } catch (Exception e) {
@@ -28,6 +29,7 @@ public class Main {
 
         new MainWindow();
 
+        // checks if databese exists, if not then creates new one
         boolean dbExists = new File(Config.getDbPath()).exists();
         if (!dbExists) {
             Database db = new Database();
@@ -40,6 +42,7 @@ public class Main {
             }
         }
 
+        // loads records into table to be displayed
         try {
             Database.loadRecordsIntoTable();
             System.gc();
@@ -50,6 +53,7 @@ public class Main {
         }
     }
 
+    // opens FileChooser to select ADI file and imports it into database
     public static void importAdif() {
 
         JFileChooser fileChooser = new JFileChooser();
