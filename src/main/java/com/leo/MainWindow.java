@@ -48,6 +48,7 @@ public class MainWindow {
         mainTableModel.addColumn("RST RX");
         mainTableModel.addColumn("FREQ");
         mainTableModel.addColumn("MODE");
+        mainTableModel.addColumn("NAME");
         mainTableModel.addColumn("COMMENT");
 
         mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

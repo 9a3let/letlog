@@ -32,9 +32,8 @@ public class Main {
         // checks if databese exists, if not then creates new one
         boolean dbExists = new File(Config.getDbPath()).exists();
         if (!dbExists) {
-            Database db = new Database();
             try {
-                db.createdb();
+                Database.createdb();
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(MainWindow.mainFrame, "Unable to create database\n" + e.getMessage(),
                         "Error",
@@ -70,9 +69,7 @@ public class Main {
 
             Optional<Adif3> adif = adiReader.read(buffInput);
 
-            Database db = new Database();
-
-            db.importRecords(adif);
+            Database.importRecords(adif);
 
             MainWindow.statusLabel
                     .setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
