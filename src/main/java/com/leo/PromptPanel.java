@@ -3,6 +3,8 @@ package com.leo;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.time.LocalDate;
@@ -12,6 +14,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -30,6 +33,12 @@ public class PromptPanel extends JPanel {
         return spinner;
     }
 
+    private JCheckBox creatCheckBox() {
+        JCheckBox checkBox = new JCheckBox("Real Time");
+        checkBox.setFocusable(false);
+        return checkBox;
+    }
+
     private JTextField createTextField(int cols, Font font, DocumentFilter documentFilter) {
         JTextField textField = new JTextField();
         textField.setColumns(cols);
@@ -46,6 +55,7 @@ public class PromptPanel extends JPanel {
         return panel;
     }
 
+    private JCheckBox realtimeCheckBox;
     private JTextField dateField;
     private JTextField timeField;
     private JTextField callField;
@@ -58,11 +68,16 @@ public class PromptPanel extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+        realtimeCheckBox = creatCheckBox();
+        realtimeCheckBox.setSelected(true);
+
         // DATE TEXTBOX
         dateField = createTextField(6, new Font("Areal", Font.PLAIN, 13), null);
+        dateField.setEnabled(false);
 
         // TIME TEXTBOX
         timeField = createTextField(4, new Font("Areal", Font.PLAIN, 13), null); 
+        timeField.setEnabled(false);
 
         // CALLSIGN TEXTBOX
         callField = createTextField(10, new Font("Areal", Font.BOLD, 20), new CustomDocumentFilters.UcWsFilter()); 
@@ -78,6 +93,7 @@ public class PromptPanel extends JPanel {
         nameField.setNextFocusableComponent(callField);
 
         JPanel line1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        line1.add(realtimeCheckBox);
         line1.add(createFieldPanel("Date", dateField));
         line1.add(createFieldPanel("Time", timeField));
 
@@ -102,9 +118,6 @@ public class PromptPanel extends JPanel {
                     case KeyEvent.VK_SPACE:
                         sentField.setText("59");
                         rcvdField.setText("59");
-
-                        dateField.setText(LocalDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
-                        timeField.setText(LocalDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("HH:mm")));
 
                         nameField.grabFocus();
                         break;
@@ -132,6 +145,19 @@ public class PromptPanel extends JPanel {
             public void keyTyped(KeyEvent e) {}
         };
 
+        realtimeCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == 1) {
+                    dateField.setEnabled(false);
+                    timeField.setEnabled(false);
+                } else {
+                    dateField.setEnabled(true);
+                    timeField.setEnabled(true);
+                }
+            }
+        });
+
         dateField.addKeyListener(keyListener2);
         timeField.addKeyListener(keyListener2);
         callField.addKeyListener(keyListener1);
@@ -144,8 +170,18 @@ public class PromptPanel extends JPanel {
     void logQso() {
         Adif3Record record = new Adif3Record();
 
-        record.setQsoDate(LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("yyyy/MM/dd")));
-        record.setTimeOn(LocalTime.parse(timeField.getText(), DateTimeFormatter.ofPattern("HH:mm")));
+        LocalDate date;
+        LocalTime time;
+
+        if (realtimeCheckBox.isSelected()) {
+            date = LocalDate.now(ZoneOffset.UTC);
+            time = LocalTime.now(ZoneOffset.UTC);
+        } else {
+            date = LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+            time = LocalTime.parse(timeField.getText(), DateTimeFormatter.ofPattern("HH:mm"));
+        }
+        record.setQsoDate(date);
+        record.setTimeOn(time);
         record.setCall(callField.getText());
         record.setRstSent(sentField.getText());
         record.setRstRcvd(rcvdField.getText());
