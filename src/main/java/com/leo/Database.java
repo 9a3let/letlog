@@ -14,7 +14,6 @@ import java.util.Optional;
 
 import org.marsik.ham.adif.Adif3;
 import org.marsik.ham.adif.Adif3Record;
-import org.marsik.ham.adif.enums.Mode;
 import org.marsik.ham.adif.enums.Propagation;
 
 public class Database {
@@ -55,7 +54,6 @@ public class Database {
 
             Adif3Record record;
             Propagation prop;
-            Mode mode;
 
             for (int i = 0; i < recordCount; i++) {
 
@@ -65,8 +63,7 @@ public class Database {
                 pstmt.setString(3, record.getCall()); // CALLSIGN
                 pstmt.setString(4, record.getRstSent()); // SENT RST
                 pstmt.setString(5, record.getRstRcvd()); // RCVD RST
-                mode = record.getMode();
-                pstmt.setString(6, mode.toString()); // MODE
+                pstmt.setString(6, record.toString()); // MODE
                 pstmt.setLong(7, (long) (record.getFreq() * 1000000)); // FREQUENCY in Hz
                 pstmt.setString(8, record.getGridsquare()); // GRID
                 pstmt.setString(9, record.getName()); // NAME
@@ -92,7 +89,6 @@ public class Database {
         }
     }
 
-    // TODO
     public static void importRecord(Adif3Record record) throws Exception {
         final String sql = "INSERT INTO log(" + columns + ") VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
