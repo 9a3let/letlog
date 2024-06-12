@@ -35,7 +35,6 @@ public class Config {
         dbPath = config.getString("General.databasePath");
         mainFrameSizeX = config.getInt("Window.sizeX");
         mainFrameSizeY = config.getInt("Window.sizeY");
-
     }
 
     public static void writeConfigFile() throws Exception {

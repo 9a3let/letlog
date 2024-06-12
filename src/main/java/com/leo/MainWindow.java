@@ -103,7 +103,6 @@ public class MainWindow {
         centerPanel.add(promptPanel, BorderLayout.SOUTH);
 
         mainFrame.add(centerPanel, BorderLayout.CENTER);
-
     }
 
     // updates Config and writes to config file before closing
@@ -116,7 +115,6 @@ public class MainWindow {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(mainFrame, "Unable to write configuration file\n" + e.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
-
         }
 
         mainFrame.dispose();
@@ -132,5 +130,4 @@ public class MainWindow {
             }    
         });
     }
-
 }

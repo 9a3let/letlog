@@ -48,7 +48,6 @@ public class PromptPanel extends JPanel {
         add(callPanel);
         add(sentPanel);
         add(rcvdPanel);
-
     }
 
     // Custom DocumentFilter to convert input to uppercase
@@ -71,5 +70,4 @@ public class PromptPanel extends JPanel {
             super.replace(fb, offset, length, text, attrs);
         }
     }
-
 }
