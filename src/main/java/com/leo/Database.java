@@ -126,7 +126,7 @@ public class Database {
 
     // loads records into table(model)
     public static void loadRecordsIntoTable() throws Exception {
-        final String sql = "SELECT DATE_ON, TIME_ON, CALLSIGN, SENT, RCVD, FREQ, MODE, NAME, COMMENT FROM log";
+        final String sql = "SELECT " + columns + " FROM log";
 
         try (Connection conn = DriverManager.getConnection(dbPath);
                 Statement stmt = conn.createStatement();
