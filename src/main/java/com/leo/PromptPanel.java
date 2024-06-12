@@ -112,6 +112,7 @@ public class PromptPanel extends JPanel {
                     case KeyEvent.VK_ENTER:
                         logQso();
                         wipe();
+                        callField.grabFocus();
                         break;
     
                     case KeyEvent.VK_SPACE:
@@ -135,6 +136,7 @@ public class PromptPanel extends JPanel {
                     case KeyEvent.VK_ENTER:
                         logQso();
                         wipe();
+                        callField.grabFocus();
                         break;
                 }
             }
