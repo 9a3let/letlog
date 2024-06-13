@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -47,7 +48,7 @@ public class PromptPanel extends JPanel {
         return textField;
     }
 
-    private JPanel createFieldPanel(String labelText, JTextField textField) {
+    private JPanel createFieldPanel(String labelText, JComponent textField) {
         JPanel panel = new JPanel(new BorderLayout());
         JLabel label = new JLabel(labelText);
         panel.add(label, BorderLayout.PAGE_START);
@@ -68,6 +69,7 @@ public class PromptPanel extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+        // REAL TIME CHECK BOX
         realtimeCheckBox = creatCheckBox();
         realtimeCheckBox.setSelected(true);
 
@@ -93,7 +95,7 @@ public class PromptPanel extends JPanel {
         nameField.setNextFocusableComponent(callField);
 
         JPanel line1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        line1.add(realtimeCheckBox);
+        line1.add(createFieldPanel("\n", realtimeCheckBox));
         line1.add(createFieldPanel("Date", dateField));
         line1.add(createFieldPanel("Time", timeField));
 

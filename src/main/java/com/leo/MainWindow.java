@@ -1,6 +1,7 @@
 package com.leo;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.WindowAdapter;
@@ -16,7 +17,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -96,10 +100,21 @@ public class MainWindow {
         PromptPanel promptPanel = new PromptPanel();
 
         centerPanel.setLayout(new BorderLayout());
-
+        
+        // QSO TABLE
         table.setRowHeight(25);
-        table.setFont(new Font("Areal", Font.ROMAN_BASELINE, 18));
-        table.getTableHeader().setFont(new Font("Areal", Font.BOLD, 16));
+        table.setFont(table.getFont().deriveFont(16f));
+        table.getTableHeader().setFont(table.getFont().deriveFont(16f));
+        table.setRowSelectionAllowed(false);
+        table.setShowHorizontalLines(true);
+
+        UIDefaults defaults = UIManager.getLookAndFeelDefaults();
+        defaults.putIfAbsent("Table.alternateRowColor", Color.DARK_GRAY); // sets every other row color
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        table.setDefaultRenderer(Object.class, centerRenderer); // centers text in cells
+
         table.setFocusable(false);
 
         centerPanel.add(scrollPane, BorderLayout.CENTER);
