@@ -17,9 +17,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.DefaultTableModel;
+
+import com.formdev.flatlaf.FlatDarkLaf;
 
 public class MainWindow {
     public static JFrame mainFrame = new JFrame();
@@ -30,7 +31,7 @@ public class MainWindow {
     public MainWindow() {
 
         try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            FlatDarkLaf.setup();
         } catch (Exception e) {}
 
         mainFrame.setSize(Config.getMainFrameSizeX(), Config.getMainFrameSizeY());
@@ -99,6 +100,7 @@ public class MainWindow {
         table.setRowHeight(25);
         table.setFont(new Font("Areal", Font.ROMAN_BASELINE, 18));
         table.getTableHeader().setFont(new Font("Areal", Font.BOLD, 16));
+        table.setFocusable(false);
 
         centerPanel.add(scrollPane, BorderLayout.CENTER);
         centerPanel.add(promptPanel, BorderLayout.SOUTH);
