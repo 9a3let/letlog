@@ -76,20 +76,20 @@ public class PromptPanel extends JPanel {
         dateField.setEnabled(false);
 
         // TIME TEXTBOX
-        timeField = createTextField(4, new Font("Areal", Font.PLAIN, 13), null); 
+        timeField = createTextField(4, new Font("Areal", Font.PLAIN, 13), null);
         timeField.setEnabled(false);
 
         // CALLSIGN TEXTBOX
-        callField = createTextField(10, new Font("Areal", Font.BOLD, 20), new CustomDocumentFilters.UcWsFilter()); 
+        callField = createTextField(10, new Font("Areal", Font.BOLD, 20), new CustomDocumentFilters.UcWsFilter());
 
         // SENT RST TEXTBOX
-        sentField = createTextField(4, new Font("Areal", Font.PLAIN, 20), new CustomDocumentFilters.NrFilter()); 
+        sentField = createTextField(4, new Font("Areal", Font.PLAIN, 20), new CustomDocumentFilters.NrFilter());
 
         // RCVD RST TEXTBOX
-        rcvdField = createTextField(4, new Font("Areal", Font.PLAIN, 20), new CustomDocumentFilters.NrFilter()); 
+        rcvdField = createTextField(4, new Font("Areal", Font.PLAIN, 20), new CustomDocumentFilters.NrFilter());
 
         // NAME TEXTBOX
-        nameField = createTextField(10, new Font("Areal", Font.PLAIN, 20), null); 
+        nameField = createTextField(10, new Font("Areal", Font.PLAIN, 20), null);
         nameField.setNextFocusableComponent(callField);
 
         JPanel line1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -113,7 +113,7 @@ public class PromptPanel extends JPanel {
                     case KeyEvent.VK_ENTER:
                         logQso();
                         break;
-    
+
                     case KeyEvent.VK_SPACE:
                         sentField.setText("59");
                         rcvdField.setText("59");
@@ -122,10 +122,14 @@ public class PromptPanel extends JPanel {
                         break;
                 }
             }
+
             @Override
-            public void keyReleased(KeyEvent e) {}
+            public void keyReleased(KeyEvent e) {
+            }
+
             @Override
-            public void keyTyped(KeyEvent e) {}
+            public void keyTyped(KeyEvent e) {
+            }
         };
 
         KeyListener keyListener2 = new KeyListener() {
@@ -137,10 +141,14 @@ public class PromptPanel extends JPanel {
                         break;
                 }
             }
+
             @Override
-            public void keyReleased(KeyEvent e) {}
+            public void keyReleased(KeyEvent e) {
+            }
+
             @Override
-            public void keyTyped(KeyEvent e) {}
+            public void keyTyped(KeyEvent e) {
+            }
         };
 
         realtimeCheckBox.addItemListener(new ItemListener() {
@@ -197,7 +205,7 @@ public class PromptPanel extends JPanel {
                 time = LocalTime.parse(timeField.getText(), DateTimeFormatter.ofPattern("HH:mm"));
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(MainWindow.mainFrame, "Date/time error\n" + e.getMessage(), "Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }

@@ -15,7 +15,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.DefaultTableModel;
@@ -23,21 +22,22 @@ import javax.swing.table.DefaultTableModel;
 import com.formdev.flatlaf.FlatDarkLaf;
 
 public class MainWindow {
-    public static JFrame mainFrame = new JFrame();
-    public static JLabel statusLabel = new JLabel();
+
     public static DefaultTableModel mainTableModel = new DefaultTableModel();
+    public static JFrame mainFrame;
+    public static JLabel statusLabel;
     private static JScrollPane scrollPane;
 
     public MainWindow() {
 
-        try {
-            FlatDarkLaf.setup();
-        } catch (Exception e) {}
+        FlatDarkLaf.setup();
+
+        mainFrame = new JFrame();
 
         mainFrame.setSize(Config.getMainFrameSizeX(), Config.getMainFrameSizeY());
         mainFrame.setLayout(new BorderLayout());
         mainFrame.setTitle("LetLog");
-        
+
         createMenuBar();
         createStatusPanel();
         createCenterPanel();
@@ -59,7 +59,7 @@ public class MainWindow {
             }
         });
 
-        mainFrame.setVisible(true);;
+        mainFrame.setVisible(true);
     }
 
     private static void createMenuBar() {
@@ -79,13 +79,13 @@ public class MainWindow {
 
     private static void createStatusPanel() {
         JPanel statusPanel = new JPanel();
+        statusLabel = new JLabel();
         statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
         statusPanel.setPreferredSize(new Dimension(mainFrame.getWidth(), 18));
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
-        mainFrame.add(statusPanel, BorderLayout.SOUTH);
-
-        statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
         statusPanel.add(statusLabel);
+
+        mainFrame.add(statusPanel, BorderLayout.SOUTH);
     }
 
     private static void createCenterPanel() {
@@ -124,13 +124,13 @@ public class MainWindow {
         System.exit(0);
     }
 
-    // scrolls table to bottom 
-    public static void mainTableScrollToBottom () {
+    // scrolls table to bottom
+    public static void mainTableScrollToBottom() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
-            }    
+            }
         });
     }
 }
