@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.DocumentFilter;
 
@@ -30,7 +31,7 @@ public class PromptPanel extends JPanel {
 
     private JSpinner createSpinner() {
         JSpinner spinner = new JSpinner();
-        spinner.setValue(7023);
+        spinner.setFocusable(false);
         return spinner;
     }
 
@@ -58,6 +59,7 @@ public class PromptPanel extends JPanel {
 
     private JCheckBox realtimeCheckBox;
     private JTextField dateField;
+    private JTextField freqSpinner;
     private JTextField timeField;
     private JTextField callField;
     private JTextField sentField;
@@ -80,6 +82,8 @@ public class PromptPanel extends JPanel {
         // TIME TEXTBOX
         timeField = createTextField(4, new Font("Areal", Font.PLAIN, 13), null);
         timeField.setEnabled(false);
+        
+        freqSpinner = createTextField(4, new Font("Areal", Font.PLAIN, 13), null);
 
         // CALLSIGN TEXTBOX
         callField = createTextField(10, new Font("Areal", Font.BOLD, 20), new CustomDocumentFilters.UcWsFilter());
@@ -98,6 +102,7 @@ public class PromptPanel extends JPanel {
         line1.add(createFieldPanel("\n", realtimeCheckBox));
         line1.add(createFieldPanel("Date", dateField));
         line1.add(createFieldPanel("Time", timeField));
+        line1.add(createFieldPanel("Frequency", freqSpinner));
 
         JPanel line2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         line2.add(createFieldPanel("Callsign", callField));
@@ -107,6 +112,8 @@ public class PromptPanel extends JPanel {
 
         add(line1);
         add(line2, BoxLayout.Y_AXIS);
+
+        SwingUtilities.invokeLater(() -> callField.requestFocusInWindow());
 
         KeyListener keyListener1 = new KeyListener() {
             @Override
