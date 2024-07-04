@@ -20,7 +20,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.DocumentFilter;
 
@@ -59,7 +58,7 @@ public class PromptPanel extends JPanel {
 
     private JCheckBox realtimeCheckBox;
     private JTextField dateField;
-    private JTextField freqSpinner;
+    private JSpinner freqSpinner;
     private JTextField timeField;
     private JTextField callField;
     private JTextField sentField;
@@ -83,7 +82,8 @@ public class PromptPanel extends JPanel {
         timeField = createTextField(4, new Font("Areal", Font.PLAIN, 13), null);
         timeField.setEnabled(false);
         
-        freqSpinner = createTextField(4, new Font("Areal", Font.PLAIN, 13), null);
+        // FREQUENCY SPINNER
+        freqSpinner = createSpinner();
 
         // CALLSIGN TEXTBOX
         callField = createTextField(10, new Font("Areal", Font.BOLD, 20), new CustomDocumentFilters.UcWsFilter());
@@ -110,10 +110,8 @@ public class PromptPanel extends JPanel {
         line2.add(createFieldPanel("RX RST", rcvdField));
         line2.add(createFieldPanel("Name", nameField));
 
-        add(line1);
-        add(line2, BoxLayout.Y_AXIS);
-
-        SwingUtilities.invokeLater(() -> callField.requestFocusInWindow());
+        add(line2);
+        add(line1, BoxLayout.Y_AXIS);
 
         KeyListener keyListener1 = new KeyListener() {
             @Override
@@ -179,7 +177,6 @@ public class PromptPanel extends JPanel {
         sentField.addKeyListener(keyListener2);
         rcvdField.addKeyListener(keyListener2);
         nameField.addKeyListener(keyListener2);
-
     }
 
     void logQso() {
