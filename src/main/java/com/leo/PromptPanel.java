@@ -34,8 +34,8 @@ public class PromptPanel extends JPanel {
         return spinner;
     }
 
-    private JCheckBox creatCheckBox() {
-        JCheckBox checkBox = new JCheckBox("Real Time");
+    private JCheckBox creatCheckBox(String text) {
+        JCheckBox checkBox = new JCheckBox(text);
         checkBox.setFocusable(false);
         return checkBox;
     }
@@ -71,7 +71,7 @@ public class PromptPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         // REAL TIME CHECK BOX
-        realtimeCheckBox = creatCheckBox();
+        realtimeCheckBox = creatCheckBox("Real Time");
         realtimeCheckBox.setSelected(true);
 
         // DATE TEXTBOX
