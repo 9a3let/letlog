@@ -40,30 +40,30 @@ public class PromptPanel extends JPanel {
         return checkBox;
     }
 
-    private JTextField createTextField(int cols, Font font, DocumentFilter documentFilter) {
-        JTextField textField = new JTextField();
-        textField.setColumns(cols);
-        textField.setFont(font);
-        ((AbstractDocument) textField.getDocument()).setDocumentFilter(documentFilter);
-        return textField;
+    private JTextField createTextEntry(int cols, Font font, DocumentFilter documentFilter) {
+        JTextField textEntry = new JTextField();
+        textEntry.setColumns(cols);
+        textEntry.setFont(font);
+        ((AbstractDocument) textEntry.getDocument()).setDocumentFilter(documentFilter);
+        return textEntry;
     }
 
-    private JPanel createFieldPanel(String labelText, JComponent textField) {
+    private JPanel createEntryPanel(String labelText, JComponent textEntry) {
         JPanel panel = new JPanel(new BorderLayout());
         JLabel label = new JLabel(labelText);
         panel.add(label, BorderLayout.PAGE_START);
-        panel.add(textField, BorderLayout.PAGE_END);
+        panel.add(textEntry, BorderLayout.PAGE_END);
         return panel;
     }
 
     private JCheckBox realtimeCheckBox;
-    private JTextField dateField;
-    private JSpinner freqSpinner;
-    private JTextField timeField;
-    private JTextField callField;
-    private JTextField sentField;
-    private JTextField rcvdField;
-    private JTextField nameField;
+    private JTextField dateEntry;
+    private JSpinner freqEntry;
+    private JTextField timeEntry;
+    private JTextField callEntry;
+    private JTextField sentEntry;
+    private JTextField rcvdEntry;
+    private JTextField nameEntry;
 
     @SuppressWarnings("deprecation")
     public PromptPanel() {
@@ -75,40 +75,40 @@ public class PromptPanel extends JPanel {
         realtimeCheckBox.setSelected(true);
 
         // DATE TEXTBOX
-        dateField = createTextField(6, new Font("Areal", Font.PLAIN, 13), null);
-        dateField.setEnabled(false);
+        dateEntry = createTextEntry(6, new Font("Areal", Font.PLAIN, 13), null);
+        dateEntry.setEnabled(false);
 
         // TIME TEXTBOX
-        timeField = createTextField(4, new Font("Areal", Font.PLAIN, 13), null);
-        timeField.setEnabled(false);
+        timeEntry = createTextEntry(4, new Font("Areal", Font.PLAIN, 13), null);
+        timeEntry.setEnabled(false);
         
         // FREQUENCY SPINNER
-        freqSpinner = createSpinner();
+        freqEntry = createSpinner();
 
         // CALLSIGN TEXTBOX
-        callField = createTextField(10, new Font("Areal", Font.BOLD, 20), new CustomDocumentFilters.UcWsFilter());
+        callEntry = createTextEntry(10, new Font("Areal", Font.BOLD, 20), new CustomDocumentFilters.UcWsFilter());
 
         // SENT RST TEXTBOX
-        sentField = createTextField(4, new Font("Areal", Font.PLAIN, 20), new CustomDocumentFilters.NrFilter());
+        sentEntry = createTextEntry(4, new Font("Areal", Font.PLAIN, 20), new CustomDocumentFilters.NrFilter());
 
         // RCVD RST TEXTBOX
-        rcvdField = createTextField(4, new Font("Areal", Font.PLAIN, 20), new CustomDocumentFilters.NrFilter());
+        rcvdEntry = createTextEntry(4, new Font("Areal", Font.PLAIN, 20), new CustomDocumentFilters.NrFilter());
 
         // NAME TEXTBOX
-        nameField = createTextField(10, new Font("Areal", Font.PLAIN, 20), null);
-        nameField.setNextFocusableComponent(callField);
+        nameEntry = createTextEntry(10, new Font("Areal", Font.PLAIN, 20), null);
+        nameEntry.setNextFocusableComponent(callEntry);
 
         JPanel line1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        line1.add(createFieldPanel("\n", realtimeCheckBox));
-        line1.add(createFieldPanel("Date", dateField));
-        line1.add(createFieldPanel("Time", timeField));
-        line1.add(createFieldPanel("Frequency", freqSpinner));
+        line1.add(createEntryPanel("\n", realtimeCheckBox));
+        line1.add(createEntryPanel("Date", dateEntry));
+        line1.add(createEntryPanel("Time", timeEntry));
+        line1.add(createEntryPanel("Frequency", freqEntry));
 
         JPanel line2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        line2.add(createFieldPanel("Callsign", callField));
-        line2.add(createFieldPanel("TX RST", sentField));
-        line2.add(createFieldPanel("RX RST", rcvdField));
-        line2.add(createFieldPanel("Name", nameField));
+        line2.add(createEntryPanel("Callsign", callEntry));
+        line2.add(createEntryPanel("TX RST", sentEntry));
+        line2.add(createEntryPanel("RX RST", rcvdEntry));
+        line2.add(createEntryPanel("Name", nameEntry));
 
         add(line2);
         add(line1, BoxLayout.Y_AXIS);
@@ -122,10 +122,10 @@ public class PromptPanel extends JPanel {
                         break;
 
                     case KeyEvent.VK_SPACE:
-                        sentField.setText("59");
-                        rcvdField.setText("59");
+                        sentEntry.setText("59");
+                        rcvdEntry.setText("59");
 
-                        nameField.grabFocus();
+                        nameEntry.grabFocus();
                         break;
                 }
             }
@@ -162,36 +162,36 @@ public class PromptPanel extends JPanel {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == 1) {
-                    dateField.setEnabled(false);
-                    timeField.setEnabled(false);
+                    dateEntry.setEnabled(false);
+                    timeEntry.setEnabled(false);
                 } else {
-                    dateField.setEnabled(true);
-                    timeField.setEnabled(true);
+                    dateEntry.setEnabled(true);
+                    timeEntry.setEnabled(true);
                 }
             }
         });
 
-        dateField.addKeyListener(keyListener2);
-        timeField.addKeyListener(keyListener2);
-        callField.addKeyListener(keyListener1);
-        sentField.addKeyListener(keyListener2);
-        rcvdField.addKeyListener(keyListener2);
-        nameField.addKeyListener(keyListener2);
+        dateEntry.addKeyListener(keyListener2);
+        timeEntry.addKeyListener(keyListener2);
+        callEntry.addKeyListener(keyListener1);
+        sentEntry.addKeyListener(keyListener2);
+        rcvdEntry.addKeyListener(keyListener2);
+        nameEntry.addKeyListener(keyListener2);
     }
 
     void logQso() {
 
-        if (callField.getText().isBlank()) {
+        if (callEntry.getText().isBlank()) {
             JOptionPane.showMessageDialog(MainWindow.mainFrame, "Callsign filed cannot be empty!", "Warning",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if (sentField.getText().isBlank() || rcvdField.getText().isBlank()) {
+        if (sentEntry.getText().isBlank() || rcvdEntry.getText().isBlank()) {
             JOptionPane.showMessageDialog(MainWindow.mainFrame, "Reports cannot be empty!", "Warning",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if (!realtimeCheckBox.isSelected() && (dateField.getText().isBlank() || timeField.getText().isBlank())) {
+        if (!realtimeCheckBox.isSelected() && (dateEntry.getText().isBlank() || timeEntry.getText().isBlank())) {
             JOptionPane.showMessageDialog(MainWindow.mainFrame, "Date and/or time cannot be empty!", "Warning",
                     JOptionPane.WARNING_MESSAGE);
             return;
@@ -207,8 +207,8 @@ public class PromptPanel extends JPanel {
             time = LocalTime.now(ZoneOffset.UTC);
         } else {
             try {
-                date = LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-                time = LocalTime.parse(timeField.getText(), DateTimeFormatter.ofPattern("HH:mm"));
+                date = LocalDate.parse(dateEntry.getText(), DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+                time = LocalTime.parse(timeEntry.getText(), DateTimeFormatter.ofPattern("HH:mm"));
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(MainWindow.mainFrame, "Date/time error\n" + e.getMessage(), "Error",
                         JOptionPane.ERROR_MESSAGE);
@@ -218,12 +218,12 @@ public class PromptPanel extends JPanel {
 
         record.setQsoDate(date);
         record.setTimeOn(time);
-        record.setCall(callField.getText());
-        record.setRstSent(sentField.getText());
-        record.setRstRcvd(rcvdField.getText());
+        record.setCall(callEntry.getText());
+        record.setRstSent(sentEntry.getText());
+        record.setRstRcvd(rcvdEntry.getText());
         record.setMode(Mode.CW);
         record.setFreq(7.023);
-        record.setName(nameField.getText());
+        record.setName(nameEntry.getText());
 
         try {
             Database.saveRecord(record);
@@ -237,15 +237,15 @@ public class PromptPanel extends JPanel {
             e1.printStackTrace();
         }
         wipe();
-        callField.grabFocus();
+        callEntry.grabFocus();
     }
 
     void wipe() {
-        dateField.setText("");
-        timeField.setText("");
-        callField.setText("");
-        sentField.setText("");
-        rcvdField.setText("");
-        nameField.setText("");
+        dateEntry.setText("");
+        timeEntry.setText("");
+        callEntry.setText("");
+        sentEntry.setText("");
+        rcvdEntry.setText("");
+        nameEntry.setText("");
     }
 }
