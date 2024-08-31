@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -48,6 +49,10 @@ public class PromptPanel extends JPanel {
         return textEntry;
     }
 
+    private JComboBox<String> createComboBox() {
+        return comboBox;
+    }
+
     private JPanel createEntryPanel(String labelText, JComponent textEntry) {
         JPanel panel = new JPanel(new BorderLayout());
         JLabel label = new JLabel(labelText);
@@ -56,9 +61,10 @@ public class PromptPanel extends JPanel {
         return panel;
     }
 
+    private JComboBox<String> modeComboBox;
     private JCheckBox realtimeCheckBox;
-    private JTextField dateEntry;
     private JSpinner freqEntry;
+    private JTextField dateEntry;
     private JTextField timeEntry;
     public JTextField callEntry;
     private JTextField sentEntry;
@@ -85,6 +91,8 @@ public class PromptPanel extends JPanel {
         // FREQUENCY SPINNER
         freqEntry = createSpinner();
 
+        modeComboBox = createComboBox();
+
         // CALLSIGN TEXTBOX
         callEntry = createTextEntry(10, new Font("Areal", Font.BOLD, 20), new CustomDocumentFilters.UcWsFilter());
 
@@ -103,6 +111,7 @@ public class PromptPanel extends JPanel {
         line1.add(createEntryPanel("Date", dateEntry));
         line1.add(createEntryPanel("Time", timeEntry));
         line1.add(createEntryPanel("Frequency", freqEntry));
+        line1.add(createEntryPanel("Mode", modeComboBox));
 
         JPanel line2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         line2.add(createEntryPanel("Callsign", callEntry));
