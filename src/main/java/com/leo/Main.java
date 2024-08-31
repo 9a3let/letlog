@@ -28,6 +28,7 @@ public class Main {
         }
 
         new MainWindow();
+        MainWindow.promptPanel.callEntry.requestFocusInWindow();
 
         // checks if databese exists, if not then creates new one
         boolean dbExists = new File(Config.getDbPath()).exists();

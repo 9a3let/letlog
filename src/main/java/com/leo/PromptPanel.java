@@ -60,7 +60,7 @@ public class PromptPanel extends JPanel {
     private JTextField dateEntry;
     private JSpinner freqEntry;
     private JTextField timeEntry;
-    private JTextField callEntry;
+    public JTextField callEntry;
     private JTextField sentEntry;
     private JTextField rcvdEntry;
     private JTextField nameEntry;

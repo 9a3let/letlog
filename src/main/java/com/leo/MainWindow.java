@@ -29,6 +29,7 @@ public class MainWindow {
     public static DefaultTableModel mainTableModel = new DefaultTableModel();
     public static JFrame mainFrame;
     public static JLabel statusLabel;
+    public static PromptPanel promptPanel;
     private static JScrollPane scrollPane;
 
     public MainWindow() {
@@ -96,7 +97,7 @@ public class MainWindow {
         JTable table = new JTable(mainTableModel);
         scrollPane = new JScrollPane(table);
 
-        PromptPanel promptPanel = new PromptPanel();
+        promptPanel = new PromptPanel();
 
         centerPanel.setLayout(new BorderLayout());
         
