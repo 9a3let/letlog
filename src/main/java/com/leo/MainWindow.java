@@ -84,7 +84,7 @@ public class MainWindow {
         JPanel statusPanel = new JPanel();
         statusLabel = new JLabel();
         statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        statusPanel.setPreferredSize(new Dimension(mainFrame.getWidth(), 18));
+        statusPanel.setPreferredSize(new Dimension(mainFrame.getWidth(), 22));
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
         statusPanel.add(statusLabel);
 
