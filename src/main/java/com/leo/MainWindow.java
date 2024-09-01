@@ -42,7 +42,7 @@ public class MainWindow {
         mainFrame.setSize(Config.getMainFrameSizeX(), Config.getMainFrameSizeY());
         mainFrame.setLayout(new BorderLayout());
         mainFrame.setTitle("LetLog");
-        ImageIcon ii = new ImageIcon("./icon2.png");
+        ImageIcon ii = new ImageIcon("./images/icon.png");
         mainFrame.setIconImage(ii.getImage());
 
         createMenuBar();
