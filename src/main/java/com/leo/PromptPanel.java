@@ -13,6 +13,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -25,6 +26,7 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.text.DocumentFilter;
 
 import org.marsik.ham.adif.Adif3Record;
+import org.marsik.ham.adif.enums.AdifEnumCode;
 import org.marsik.ham.adif.enums.Mode;
 
 public class PromptPanel extends JPanel {
@@ -50,6 +52,7 @@ public class PromptPanel extends JPanel {
     }
 
     private JComboBox<String> createComboBox() {
+        JComboBox<String> comboBox = new JComboBox<>();
         return comboBox;
     }
 
@@ -61,7 +64,7 @@ public class PromptPanel extends JPanel {
         return panel;
     }
 
-    private JComboBox<String> modeComboBox;
+    private JComboBox<Mode> modeComboBox;
     private JCheckBox realtimeCheckBox;
     private JSpinner freqEntry;
     private JTextField dateEntry;
@@ -91,8 +94,10 @@ public class PromptPanel extends JPanel {
         // FREQUENCY SPINNER
         freqEntry = createSpinner();
 
-        modeComboBox = createComboBox();
-
+        // MODE COMBOBOX
+        modeComboBox = new JComboBox<>(Mode.values());
+        modeComboBox.setEditable(false);
+        
         // CALLSIGN TEXTBOX
         callEntry = createTextEntry(10, new Font("Areal", Font.BOLD, 20), new CustomDocumentFilters.UcWsFilter());
 
@@ -230,8 +235,8 @@ public class PromptPanel extends JPanel {
         record.setCall(callEntry.getText());
         record.setRstSent(sentEntry.getText());
         record.setRstRcvd(rcvdEntry.getText());
-        record.setMode(Mode.CW);
-        record.setFreq(7.023);
+        record.setMode(Mode.valueOf(modeComboBox.getSelectedItem().toString()));
+        record.setFreq(7.023); 
         record.setName(nameEntry.getText());
 
         try {
