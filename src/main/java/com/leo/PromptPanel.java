@@ -13,7 +13,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -26,7 +25,6 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.text.DocumentFilter;
 
 import org.marsik.ham.adif.Adif3Record;
-import org.marsik.ham.adif.enums.AdifEnumCode;
 import org.marsik.ham.adif.enums.Mode;
 
 public class PromptPanel extends JPanel {
@@ -160,6 +158,11 @@ public class PromptPanel extends JPanel {
                     case KeyEvent.VK_ENTER:
                         logQso();
                         break;
+
+                    case (KeyEvent.VK_ESCAPE):
+                        wipe();
+                        callEntry.grabFocus();
+                        break;
                 }
             }
 
@@ -255,8 +258,6 @@ public class PromptPanel extends JPanel {
     }
 
     void wipe() {
-        dateEntry.setText("");
-        timeEntry.setText("");
         callEntry.setText("");
         sentEntry.setText("");
         rcvdEntry.setText("");
