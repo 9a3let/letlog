@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -41,6 +42,8 @@ public class MainWindow {
         mainFrame.setSize(Config.getMainFrameSizeX(), Config.getMainFrameSizeY());
         mainFrame.setLayout(new BorderLayout());
         mainFrame.setTitle("LetLog");
+        ImageIcon ii = new ImageIcon("./icon2.png");
+        mainFrame.setIconImage(ii.getImage());
 
         createMenuBar();
         createStatusPanel();
