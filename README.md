@@ -3,5 +3,5 @@ My miserable attempt at making an **amateur radio contact logger** that is platf
 *unfinished*
 
 Dependencies:\
-    openJDK 22\
-    maven
+&nbsp openJDK 22\
+&nbsp maven
