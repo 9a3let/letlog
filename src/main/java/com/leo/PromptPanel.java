@@ -267,12 +267,19 @@ public class PromptPanel extends JPanel {
         } catch (Exception e1) {
             System.err.println(e1);
         }
-        MainWindow.mainTableModel.setRowCount(0);
-        try {
-            Database.loadRecordsIntoTable();
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
+
+        MainWindow.mainTableModel.addRow(new Object[] {
+                        date.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
+                        time.format(DateTimeFormatter.ofPattern("HH:mm")),
+                        record.getCall(),
+                        record.getRstSent(),
+                        record.getRstRcvd(),
+                        freqEntry.getValue().toString(),
+                        record.getMode(),
+                        record.getName(),
+                });
+        MainWindow.mainTableScrollToBottom();
+
         wipe();
         callEntry.grabFocus();
     }
