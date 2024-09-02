@@ -1,6 +1,7 @@
 package com.leo;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
@@ -29,9 +30,11 @@ import org.marsik.ham.adif.enums.Mode;
 
 public class PromptPanel extends JPanel {
 
-    private JSpinner createSpinner() {
+    private JSpinner createSpinner(int width, int height) {
         JSpinner spinner = new JSpinner();
         spinner.setFocusable(false);
+        Dimension d = new Dimension(width, height);
+        spinner.setPreferredSize(d);
         return spinner;
     }
 
@@ -62,10 +65,10 @@ public class PromptPanel extends JPanel {
         return panel;
     }
 
-    private JComboBox<Mode> modeComboBox;
+    public JComboBox<Mode> modeComboBox;
     private JCheckBox realtimeCheckBox;
-    private JSpinner freqEntry;
-    private JTextField dateEntry;
+    public JSpinner freqEntry;
+    public JTextField dateEntry;
     private JTextField timeEntry;
     public JTextField callEntry;
     private JTextField sentEntry;
@@ -90,11 +93,12 @@ public class PromptPanel extends JPanel {
         timeEntry.setEnabled(false);
         
         // FREQUENCY SPINNER
-        freqEntry = createSpinner();
+        freqEntry = createSpinner(100, 25);
 
         // MODE COMBOBOX
         modeComboBox = new JComboBox<>(Mode.values());
         modeComboBox.setEditable(false);
+        modeComboBox.setMinimumSize(new Dimension(modeComboBox.getWidth(), 25));
         
         // CALLSIGN TEXTBOX
         callEntry = createTextEntry(10, new Font("Areal", Font.BOLD, 20), new CustomDocumentFilters.UcWsFilter());
@@ -138,6 +142,11 @@ public class PromptPanel extends JPanel {
                         rcvdEntry.setText("59");
 
                         nameEntry.grabFocus();
+                        break;
+
+                    case (KeyEvent.VK_ESCAPE):
+                        wipe();
+                        callEntry.grabFocus();
                         break;
                 }
             }
@@ -194,10 +203,16 @@ public class PromptPanel extends JPanel {
         sentEntry.addKeyListener(keyListener2);
         rcvdEntry.addKeyListener(keyListener2);
         nameEntry.addKeyListener(keyListener2);
+
     }
 
     void logQso() {
 
+        if (callEntry.getText().contentEquals("WIPELOG")) {
+            JOptionPane.showMessageDialog(MainWindow.mainFrame, "wipelog", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         if (callEntry.getText().isBlank()) {
             JOptionPane.showMessageDialog(MainWindow.mainFrame, "Callsign filed cannot be empty!", "Warning",
                     JOptionPane.WARNING_MESSAGE);
@@ -210,6 +225,11 @@ public class PromptPanel extends JPanel {
         }
         if (!realtimeCheckBox.isSelected() && (dateEntry.getText().isBlank() || timeEntry.getText().isBlank())) {
             JOptionPane.showMessageDialog(MainWindow.mainFrame, "Date and/or time cannot be empty!", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (freqEntry.getValue().equals(0)) {
+            JOptionPane.showMessageDialog(MainWindow.mainFrame, "Frequency filed cannot be zero!", "Warning",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -239,7 +259,7 @@ public class PromptPanel extends JPanel {
         record.setRstSent(sentEntry.getText());
         record.setRstRcvd(rcvdEntry.getText());
         record.setMode(Mode.valueOf(modeComboBox.getSelectedItem().toString()));
-        record.setFreq(7.023); 
+        record.setFreq((double)(int)freqEntry.getValue()/1000d); 
         record.setName(nameEntry.getText());
 
         try {
