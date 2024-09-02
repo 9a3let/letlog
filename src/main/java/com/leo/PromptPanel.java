@@ -94,6 +94,7 @@ public class PromptPanel extends JPanel {
         
         // FREQUENCY SPINNER
         freqEntry = createSpinner(100, 25);
+        freqEntry.setValue(3675);
 
         // MODE COMBOBOX
         modeComboBox = new JComboBox<>(Mode.values());
@@ -216,9 +217,8 @@ public class PromptPanel extends JPanel {
                 MainWindow.mainTableModel.setRowCount(0);
                 clearPrompt();
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(MainWindow.mainFrame, "Unable to wipe the log: " + e.getLocalizedMessage(), "Error",
+                JOptionPane.showMessageDialog(MainWindow.mainFrame, "Unable to wipe the log: " + e.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
-                e.printStackTrace();
             }
             return;
         }
