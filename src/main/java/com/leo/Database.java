@@ -170,4 +170,14 @@ public class Database {
         }
         System.gc();
     }
+
+    public static void wipeLog() throws Exception {
+        final String sql = "DELETE FROM log";
+
+        try (Connection conn = DriverManager.getConnection(dbPath);
+                Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        }
+
+    }
 }

@@ -145,7 +145,7 @@ public class PromptPanel extends JPanel {
                         break;
 
                     case (KeyEvent.VK_ESCAPE):
-                        wipe();
+                        clearPrompt();;
                         callEntry.grabFocus();
                         break;
                 }
@@ -169,7 +169,7 @@ public class PromptPanel extends JPanel {
                         break;
 
                     case (KeyEvent.VK_ESCAPE):
-                        wipe();
+                        clearPrompt();;
                         callEntry.grabFocus();
                         break;
                 }
@@ -209,8 +209,16 @@ public class PromptPanel extends JPanel {
     void logQso() {
 
         if (callEntry.getText().contentEquals("WIPELOG")) {
-            JOptionPane.showMessageDialog(MainWindow.mainFrame, "wipelog", "Warning",
-                    JOptionPane.WARNING_MESSAGE);
+            /*JOptionPane.showMessageDialog(MainWindow.mainFrame, "wipelog", "Warning",
+                    JOptionPane.WARNING_MESSAGE);*/
+            try {
+                Database.wipeLog();
+                MainWindow.mainTableModel.setRowCount(0);
+                clearPrompt();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             return;
         }
         if (callEntry.getText().isBlank()) {
@@ -280,11 +288,11 @@ public class PromptPanel extends JPanel {
                 });
         MainWindow.mainTableScrollToBottom();
 
-        wipe();
+        clearPrompt();;
         callEntry.grabFocus();
     }
 
-    void wipe() {
+    void clearPrompt() {
         callEntry.setText("");
         sentEntry.setText("");
         rcvdEntry.setText("");
