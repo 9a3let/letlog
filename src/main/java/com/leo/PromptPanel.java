@@ -216,7 +216,8 @@ public class PromptPanel extends JPanel {
                 MainWindow.mainTableModel.setRowCount(0);
                 clearPrompt();
             } catch (Exception e) {
-                // TODO Auto-generated catch block
+                JOptionPane.showMessageDialog(MainWindow.mainFrame, "Unable to wipe the log: " + e.getLocalizedMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace();
             }
             return;
