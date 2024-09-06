@@ -139,8 +139,15 @@ public class PromptPanel extends JPanel {
                         break;
 
                     case KeyEvent.VK_SPACE:
-                        sentEntry.setText("59");
-                        rcvdEntry.setText("59");
+                        if (modeComboBox.getSelectedItem().toString().matches("SSB|AM")) {
+                            sentEntry.setText("59");
+                            rcvdEntry.setText("59");
+
+                        } else if (modeComboBox.getSelectedItem().toString().matches("CW")) {
+                            sentEntry.setText("599");
+                            rcvdEntry.setText("599");
+
+                        }
 
                         nameEntry.grabFocus();
                         break;
