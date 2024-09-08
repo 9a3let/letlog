@@ -21,7 +21,7 @@ public class Database {
     private static String dbPath = "jdbc:sqlite:" + Config.getDbPath();
 
     private static final String createColumns = "ID integer primary key, DATE_ON text, TIME_ON text, CALLSIGN text, SENT text, RCVD text, "
-            + "MODE text, FREQ integer, GRIDSQUARE text, NAME text, CONTEST_ID text, COMMENT text, PROP_MODE text, "
+            + "MODE text, FREQ bigint, GRIDSQUARE text, NAME text, CONTEST_ID text, COMMENT text, PROP_MODE text, "
             + "STATE text";
 
     private final static String columns = "DATE_ON, TIME_ON, CALLSIGN, SENT, RCVD, MODE, FREQ, GRIDSQUARE, NAME, CONTEST_ID, COMMENT, PROP_MODE, STATE";
@@ -37,7 +37,7 @@ public class Database {
     }
 
     // imports records into database
-    public static void importRecords(Optional<Adif3> adif) throws Exception {
+    public static void importRecordsFromAdif(Optional<Adif3> adif) throws Exception {
 
         final String sql = "INSERT INTO log(" + columns + ") VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -48,7 +48,7 @@ public class Database {
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
             conn.setAutoCommit(false);
 
-            int batchSize = 1000;
+            final int batchSize = 1000;
             int recordCount = adif.get().getRecords().size();
             List<Adif3Record> records = adif.get().getRecords();
 
@@ -64,7 +64,13 @@ public class Database {
                 pstmt.setString(4, record.getRstSent()); // SENT RST
                 pstmt.setString(5, record.getRstRcvd()); // RCVD RST
                 pstmt.setString(6, record.getMode().toString()); // MODE
-                pstmt.setLong(7, (long) (record.getFreq() * 1000000)); // FREQUENCY in Hz
+
+                if (record.getFreq() != null) {
+                    pstmt.setLong(7, (long) (record.getFreq() * 1000000)); // FREQUENCY in Hz
+                } else {
+                    pstmt.setLong(7, 0);
+                }
+
                 pstmt.setString(8, record.getGridsquare()); // GRID
                 pstmt.setString(9, record.getName()); // NAME
                 pstmt.setString(10, record.getContestId()); // CONTEST ID
@@ -142,7 +148,7 @@ public class Database {
             LocalTime time;
             String outputTime;
 
-            float freq;
+            double freq;
 
             while (rs.next()) {
 
@@ -152,7 +158,7 @@ public class Database {
                 time = LocalTime.parse(rs.getString("TIME_ON"), inputTimeFormatter);
                 outputTime = time.format(outputTimeFormatter);
 
-                freq = Float.parseFloat(rs.getString("FREQ")) / 1000;
+                freq = rs.getLong("FREQ") / 1000d;
 
                 MainWindow.mainTableModel.addRow(new Object[] {
                         outputDate,
@@ -178,6 +184,5 @@ public class Database {
                 Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
         }
-
     }
 }

@@ -70,7 +70,7 @@ public class Main {
 
             Optional<Adif3> adif = adiReader.read(buffInput);
 
-            Database.importRecords(adif);
+            Database.importRecordsFromAdif(adif);
 
             MainWindow.statusLabel
                     .setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");

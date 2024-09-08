@@ -284,13 +284,15 @@ public class PromptPanel extends JPanel {
             System.err.println(e1);
         }
 
+        double freq = Double.parseDouble(freqEntry.getValue().toString());
+
         MainWindow.mainTableModel.addRow(new Object[] {
                         date.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
                         time.format(DateTimeFormatter.ofPattern("HH:mm")),
                         record.getCall(),
                         record.getRstSent(),
                         record.getRstRcvd(),
-                        freqEntry.getValue().toString(),
+                        freq,
                         record.getMode(),
                         record.getName(),
                 });
