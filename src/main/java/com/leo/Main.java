@@ -104,7 +104,6 @@ public class Main {
         if (fileChooser.showDialog(MainWindow.mainFrame, "Export") != JFileChooser.APPROVE_OPTION) {
             return;
         }
-        System.err.println(fileChooser.getSelectedFile());
 
         try {
             Database.exportRecordsToAdif(fileChooser.getSelectedFile().toString());

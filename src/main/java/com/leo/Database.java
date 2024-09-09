@@ -133,8 +133,7 @@ public class Database {
             File adiFile = new File(adifPath + ".adi");
             adiFile.createNewFile();
             FileWriter adifWriter = new FileWriter(adiFile);
-            adifWriter.append(header.getProgramId() + "\n");
-            adifWriter.append(writer.toString());
+            adifWriter.write(writer.toString());
             adifWriter.close();
             MainWindow.statusLabel.setText("ADIF Export finished: exported " + numberOfRecords + " records");
         }
