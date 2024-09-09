@@ -47,6 +47,7 @@ public class PromptPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         createInputs();
+        createKeyListeners();
 
         realtimeCheckBox.addItemListener(e -> {
             boolean selected = (e.getStateChange() == ItemEvent.SELECTED);

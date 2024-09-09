@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.marsik.ham.adif.AdiReader;
@@ -29,10 +28,8 @@ public class Main {
                     JOptionPane.ERROR_MESSAGE);
         }
 
-        SwingUtilities.invokeLater(() -> {
-            new MainWindow();
-            MainWindow.promptPanel.callEntry.requestFocusInWindow();
-        });
+        new MainWindow();
+        MainWindow.promptPanel.callEntry.requestFocusInWindow();
         
         // checks if databese exists, if not then creates new one
         boolean dbExists = new File(Config.getDbPath()).exists();

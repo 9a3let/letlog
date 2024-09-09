@@ -131,6 +131,15 @@ public class MainWindow {
 
         mainFrame.add(centerPanel, BorderLayout.CENTER);
     }
+    
+    public static void mainTableScrollToBottom() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
+            }
+        });
+    }
 
     // updates Config and writes to config file before closing
     static void exit() {
@@ -148,13 +157,4 @@ public class MainWindow {
         System.exit(0);
     }
 
-    // scrolls table to bottom
-    public static void mainTableScrollToBottom() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
-            }
-        });
-    }
 }
