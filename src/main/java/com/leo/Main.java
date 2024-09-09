@@ -9,6 +9,8 @@ import java.util.Optional;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.marsik.ham.adif.AdiReader;
 import org.marsik.ham.adif.Adif3;
@@ -57,9 +59,11 @@ public class Main {
     public static void importAdif() {
 
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Import ADIF");
+        fileChooser.setFileFilter(new FileNameExtensionFilter("ADI file", "adi", "ADI", "adif", "ADIF"));
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 
-        if (fileChooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showDialog(MainWindow.mainFrame, "Import") != JFileChooser.APPROVE_OPTION) {
             return;
         }
 
@@ -85,6 +89,29 @@ public class Main {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(MainWindow.mainFrame,
                     "Unable to insert records into table\n" + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static void exportAdif() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Export ADIF");
+        fileChooser.setApproveButtonText("Export");
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setFileFilter(new FileNameExtensionFilter("ADI file", "adi"));
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+
+        if (fileChooser.showDialog(MainWindow.mainFrame, "Export") != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        System.err.println(fileChooser.getSelectedFile());
+
+        try {
+            Database.exportRecordsToAdif(fileChooser.getSelectedFile().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(MainWindow.mainFrame,
+                    "Unable to export ADIF\n" + e.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
     }

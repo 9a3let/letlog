@@ -72,15 +72,21 @@ public class MainWindow {
     private static void createMenuBar() {
         JMenuBar mainMenuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
+
         JMenuItem fileMenuImportAdif = new JMenuItem("Import ADIF");
+        JMenuItem fileMenuExportAdif = new JMenuItem("Export ADIF");
         JMenuItem fileMenuExit = new JMenuItem("Exit");
 
         fileMenu.add(fileMenuImportAdif);
+        fileMenu.add(fileMenuExportAdif);
+        fileMenu.addSeparator();
         fileMenu.add(fileMenuExit);
+
         mainMenuBar.add(fileMenu);
         mainFrame.setJMenuBar(mainMenuBar);
 
         fileMenuImportAdif.addActionListener(e -> Main.importAdif());
+        fileMenuExportAdif.addActionListener(e -> Main.exportAdif());
         fileMenuExit.addActionListener(e -> exit());
     }
 

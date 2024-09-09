@@ -1,5 +1,7 @@
 package com.leo;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,8 +14,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
+import org.marsik.ham.adif.AdiWriter;
 import org.marsik.ham.adif.Adif3;
 import org.marsik.ham.adif.Adif3Record;
+import org.marsik.ham.adif.AdifHeader;
+import org.marsik.ham.adif.enums.Mode;
 import org.marsik.ham.adif.enums.Propagation;
 
 public class Database {
@@ -44,8 +49,6 @@ public class Database {
         try (Connection conn = DriverManager.getConnection(dbPath);
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
             conn.setAutoCommit(false);
 
             final int batchSize = 1000;
@@ -58,19 +61,17 @@ public class Database {
             for (int i = 0; i < recordCount; i++) {
 
                 record = records.get(i);
-                pstmt.setString(1, record.getQsoDate().format(dateFormatter)); // DATE ON
-                pstmt.setString(2, record.getTimeOn().format(timeFormatter)); // TIME ON
+                pstmt.setString(1, record.getQsoDate().format(DateTimeFormatter.ofPattern("yyyyMMdd"))); // DATE ON
+                pstmt.setString(2, record.getTimeOn().format(DateTimeFormatter.ofPattern("HHmmss"))); // TIME ON
                 pstmt.setString(3, record.getCall()); // CALLSIGN
                 pstmt.setString(4, record.getRstSent()); // SENT RST
                 pstmt.setString(5, record.getRstRcvd()); // RCVD RST
                 pstmt.setString(6, record.getMode().toString()); // MODE
-
                 if (record.getFreq() != null) {
                     pstmt.setLong(7, (long) (record.getFreq() * 1000000)); // FREQUENCY in Hz
                 } else {
                     pstmt.setLong(7, 0);
                 }
-
                 pstmt.setString(8, record.getGridsquare()); // GRID
                 pstmt.setString(9, record.getName()); // NAME
                 pstmt.setString(10, record.getContestId()); // CONTEST ID
@@ -94,6 +95,49 @@ public class Database {
             conn.commit();
         }
         System.gc();
+    }
+
+    public static void exportRecordsToAdif(String adifPath) throws Exception {
+
+        final String sql = "SELECT " + columns + " FROM log";
+
+        AdiWriter writer = new AdiWriter();
+        AdifHeader header = new AdifHeader();
+
+        try (Connection conn = DriverManager.getConnection(dbPath);
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
+
+            header.setProgramId("LETLOG");
+            header.setProgramVersion("alpha");
+            
+            Adif3Record record;
+            
+            int numberOfRecords = 0;
+            while (rs.next()) {
+                record = new Adif3Record();
+
+                record.setQsoDate(LocalDate.parse(rs.getString("DATE_ON"), DateTimeFormatter.ofPattern("yyyyMMdd")));
+                record.setTimeOn(LocalTime.parse(rs.getString("TIME_ON"), DateTimeFormatter.ofPattern("HHmmss")));
+                record.setCall(rs.getString("CALLSIGN"));
+                record.setRstSent(rs.getString("SENT"));
+                record.setRstRcvd(rs.getString("RCVD"));
+                record.setMode(Mode.valueOf(rs.getString("MODE")));
+                record.setFreq(rs.getLong("FREQ") / 1000000d);
+                record.setGridsquare(rs.getString("GRIDSQUARE"));
+                record.setName(rs.getString("NAME"));
+                record.setComment(rs.getString("COMMENT"));
+                writer.append(record);
+                numberOfRecords++;
+            }
+            File adiFile = new File(adifPath + ".adi");
+            adiFile.createNewFile();
+            FileWriter adifWriter = new FileWriter(adiFile);
+            adifWriter.append(header.getProgramId() + "\n");
+            adifWriter.append(writer.toString());
+            adifWriter.close();
+            MainWindow.statusLabel.setText("ADIF Export finished: exported " + numberOfRecords + " records");
+        }
     }
 
     public static void saveRecord(Adif3Record record) throws Exception {
