@@ -94,7 +94,6 @@ public class Database {
             pstmt.executeBatch();
             conn.commit();
         }
-        System.gc();
     }
 
     public static void exportRecordsToAdif(String adifPath) throws Exception {
@@ -170,7 +169,6 @@ public class Database {
             // writes to database
             pstmt.executeUpdate();
         }
-        System.gc();
     }
 
     // loads records into table(model)
@@ -217,7 +215,6 @@ public class Database {
             }
             MainWindow.mainTableScrollToBottom();
         }
-        System.gc();
     }
 
     public static void wipeLog() throws Exception {

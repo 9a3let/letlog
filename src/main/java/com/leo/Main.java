@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.marsik.ham.adif.AdiReader;
@@ -29,9 +29,11 @@ public class Main {
                     JOptionPane.ERROR_MESSAGE);
         }
 
-        new MainWindow();
-        MainWindow.promptPanel.callEntry.requestFocusInWindow();
-
+        SwingUtilities.invokeLater(() -> {
+            new MainWindow();
+            MainWindow.promptPanel.callEntry.requestFocusInWindow();
+        });
+        
         // checks if databese exists, if not then creates new one
         boolean dbExists = new File(Config.getDbPath()).exists();
         if (!dbExists) {
@@ -52,7 +54,6 @@ public class Main {
                     "Unable to insert records into table\n" + e.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
-        System.gc();
     }
 
     // opens FileChooser to select ADI file and imports it into database

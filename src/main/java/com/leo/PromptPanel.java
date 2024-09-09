@@ -30,41 +30,6 @@ import org.marsik.ham.adif.enums.Mode;
 
 public class PromptPanel extends JPanel {
 
-    private JSpinner createSpinner(int width, int height) {
-        JSpinner spinner = new JSpinner();
-        spinner.setFocusable(false);
-        Dimension d = new Dimension(width, height);
-        spinner.setPreferredSize(d);
-        return spinner;
-    }
-
-    private JCheckBox creatCheckBox(String text) {
-        JCheckBox checkBox = new JCheckBox(text);
-        checkBox.setFocusable(false);
-        return checkBox;
-    }
-
-    private JTextField createTextEntry(int cols, Font font, DocumentFilter documentFilter) {
-        JTextField textEntry = new JTextField();
-        textEntry.setColumns(cols);
-        textEntry.setFont(font);
-        ((AbstractDocument) textEntry.getDocument()).setDocumentFilter(documentFilter);
-        return textEntry;
-    }
-
-    private JComboBox<String> createComboBox() {
-        JComboBox<String> comboBox = new JComboBox<>();
-        return comboBox;
-    }
-
-    private JPanel createEntryPanel(String labelText, JComponent textEntry) {
-        JPanel panel = new JPanel(new BorderLayout());
-        JLabel label = new JLabel(labelText);
-        panel.add(label, BorderLayout.PAGE_START);
-        panel.add(textEntry, BorderLayout.PAGE_END);
-        return panel;
-    }
-
     public JComboBox<Mode> modeComboBox;
     private JCheckBox realtimeCheckBox;
     public JSpinner freqEntry;
@@ -75,11 +40,38 @@ public class PromptPanel extends JPanel {
     private JTextField rcvdEntry;
     private JTextField nameEntry;
 
-    @SuppressWarnings("deprecation")
+    private KeyListener keyListener1;
+    private KeyListener keyListener2;
+
     public PromptPanel() {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+        createInputs();
+
+        realtimeCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == 1) {
+                    dateEntry.setEnabled(false);
+                    timeEntry.setEnabled(false);
+                } else {
+                    dateEntry.setEnabled(true);
+                    timeEntry.setEnabled(true);
+                }
+            }
+        });
+
+        dateEntry.addKeyListener(keyListener2);
+        timeEntry.addKeyListener(keyListener2);
+        callEntry.addKeyListener(keyListener1);
+        sentEntry.addKeyListener(keyListener2);
+        rcvdEntry.addKeyListener(keyListener2);
+        nameEntry.addKeyListener(keyListener2);
+    }
+
+    @SuppressWarnings("deprecation")
+    void createInputs() {
         // REAL TIME CHECK BOX
         realtimeCheckBox = creatCheckBox("Real Time");
         realtimeCheckBox.setSelected(true);
@@ -127,10 +119,12 @@ public class PromptPanel extends JPanel {
         line2.add(createEntryPanel("RX RST", rcvdEntry));
         line2.add(createEntryPanel("Name", nameEntry));
 
-        add(line2);
-        add(line1, BoxLayout.Y_AXIS);
+        this.add(line2);
+        this.add(line1, BoxLayout.Y_AXIS);
+    }
 
-        KeyListener keyListener1 = new KeyListener() {
+    void createKeyListeners() {
+        keyListener1 = new KeyListener() {
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
@@ -168,7 +162,7 @@ public class PromptPanel extends JPanel {
             }
         };
 
-        KeyListener keyListener2 = new KeyListener() {
+        keyListener2 = new KeyListener() {
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
@@ -191,27 +185,41 @@ public class PromptPanel extends JPanel {
             public void keyTyped(KeyEvent e) {
             }
         };
+    }
 
-        realtimeCheckBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == 1) {
-                    dateEntry.setEnabled(false);
-                    timeEntry.setEnabled(false);
-                } else {
-                    dateEntry.setEnabled(true);
-                    timeEntry.setEnabled(true);
-                }
-            }
-        });
+    private JSpinner createSpinner(int width, int height) {
+        JSpinner spinner = new JSpinner();
+        spinner.setFocusable(false);
+        Dimension d = new Dimension(width, height);
+        spinner.setPreferredSize(d);
+        return spinner;
+    }
 
-        dateEntry.addKeyListener(keyListener2);
-        timeEntry.addKeyListener(keyListener2);
-        callEntry.addKeyListener(keyListener1);
-        sentEntry.addKeyListener(keyListener2);
-        rcvdEntry.addKeyListener(keyListener2);
-        nameEntry.addKeyListener(keyListener2);
+    private JCheckBox creatCheckBox(String text) {
+        JCheckBox checkBox = new JCheckBox(text);
+        checkBox.setFocusable(false);
+        return checkBox;
+    }
 
+    private JTextField createTextEntry(int cols, Font font, DocumentFilter documentFilter) {
+        JTextField textEntry = new JTextField();
+        textEntry.setColumns(cols);
+        textEntry.setFont(font);
+        ((AbstractDocument) textEntry.getDocument()).setDocumentFilter(documentFilter);
+        return textEntry;
+    }
+
+    private JComboBox<String> createComboBox() {
+        JComboBox<String> comboBox = new JComboBox<>();
+        return comboBox;
+    }
+
+    private JPanel createEntryPanel(String labelText, JComponent textEntry) {
+        JPanel panel = new JPanel(new BorderLayout());
+        JLabel label = new JLabel(labelText);
+        panel.add(label, BorderLayout.PAGE_START);
+        panel.add(textEntry, BorderLayout.PAGE_END);
+        return panel;
     }
 
     void logQso() {
