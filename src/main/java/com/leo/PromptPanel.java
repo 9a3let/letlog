@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.time.LocalDate;
@@ -49,17 +48,10 @@ public class PromptPanel extends JPanel {
 
         createInputs();
 
-        realtimeCheckBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == 1) {
-                    dateEntry.setEnabled(false);
-                    timeEntry.setEnabled(false);
-                } else {
-                    dateEntry.setEnabled(true);
-                    timeEntry.setEnabled(true);
-                }
-            }
+        realtimeCheckBox.addItemListener(e -> {
+            boolean selected = (e.getStateChange() == ItemEvent.SELECTED);
+            dateEntry.setEnabled(!selected);
+            timeEntry.setEnabled(!selected);
         });
 
         dateEntry.addKeyListener(keyListener2);
@@ -73,7 +65,7 @@ public class PromptPanel extends JPanel {
     @SuppressWarnings("deprecation")
     void createInputs() {
         // REAL TIME CHECK BOX
-        realtimeCheckBox = creatCheckBox("Real Time");
+        realtimeCheckBox = createCheckBox("Real Time");
         realtimeCheckBox.setSelected(true);
 
         // DATE TEXTBOX
@@ -195,7 +187,7 @@ public class PromptPanel extends JPanel {
         return spinner;
     }
 
-    private JCheckBox creatCheckBox(String text) {
+    private JCheckBox createCheckBox(String text) {
         JCheckBox checkBox = new JCheckBox(text);
         checkBox.setFocusable(false);
         return checkBox;
@@ -209,10 +201,10 @@ public class PromptPanel extends JPanel {
         return textEntry;
     }
 
-    private JComboBox<String> createComboBox() {
+    /*private JComboBox<String> createComboBox() {
         JComboBox<String> comboBox = new JComboBox<>();
         return comboBox;
-    }
+    }*/
 
     private JPanel createEntryPanel(String labelText, JComponent textEntry) {
         JPanel panel = new JPanel(new BorderLayout());
