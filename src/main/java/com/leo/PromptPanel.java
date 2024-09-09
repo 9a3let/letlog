@@ -79,12 +79,13 @@ public class PromptPanel extends JPanel {
         
         // FREQUENCY SPINNER
         freqEntry = createSpinner(100, 25);
-        freqEntry.setValue(3675);
+        freqEntry.setValue(7023);
 
         // MODE COMBOBOX
         modeComboBox = new JComboBox<>(Mode.values());
         modeComboBox.setEditable(false);
         modeComboBox.setMinimumSize(new Dimension(modeComboBox.getWidth(), 25));
+        modeComboBox.setSelectedItem(Mode.CW);
         
         // CALLSIGN TEXTBOX
         callEntry = createTextEntry(10, new Font("Areal", Font.BOLD, 20), new CustomDocumentFilters.UcWsFilter());
