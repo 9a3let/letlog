@@ -2,6 +2,6 @@ My miserable attempt at making an **amateur radio contact logger** that is platf
 
 *in development*
 
-Dependencies:\
-&nbsp; &nbsp; &nbsp; openJDK 22\
+Dependencies for building the project:\
+&nbsp; &nbsp; &nbsp; openJDK 21\
 &nbsp; &nbsp; &nbsp; maven
