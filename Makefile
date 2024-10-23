@@ -1,4 +1,10 @@
-.PHONY: build
+.PHONY: all build clean 
+
+default: 
+	mvn clean compile assembly:single
+
+clean:
+	mvn clean
 
 build:
-	mvn clean compile assembly:single
+	mvn compile assembly:single
