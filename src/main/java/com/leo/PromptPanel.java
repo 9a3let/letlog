@@ -282,8 +282,8 @@ public class PromptPanel extends JPanel {
 
         try {
             Database.saveRecord(record);
-        } catch (Exception e1) {
-            System.err.println(e1);
+        } catch (Exception e) {
+            System.err.println(e);
         }
 
         double freq = Double.parseDouble(freqEntry.getValue().toString());

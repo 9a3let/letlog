@@ -71,13 +71,14 @@ public class Main {
                 BufferedReader buffInput = new BufferedReader(adiFileReader)) {
 
             Optional<Adif3> adif = adiReader.read(buffInput);
-
+            
             Database.importRecordsFromAdif(adif);
-
+            
             MainWindow.statusLabel
                     .setText("ADIF Import finished: processed " + adif.get().getRecords().size() + " records.");
-        } catch (Exception e1) {
-            JOptionPane.showMessageDialog(MainWindow.mainFrame, "Unable to import ADIF\n" + e1.getMessage(), "Error",
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(MainWindow.mainFrame, "Unable to import ADIF\n" + e.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
 

@@ -10,7 +10,7 @@ build:
 	@printf "\nBuilding letlog...\n\n"
 	mvn clean compile assembly:single
 
-version = 0
+version = 0.0.9
 releasePath = letlog-$(version)_release
 
 release-win:
