@@ -22,7 +22,6 @@ public class Main {
         try {
             Config.readConfigFile();
         } catch (Exception e) {
-            // TODO Exceptions...
             JOptionPane.showMessageDialog(MainWindow.mainFrame, "Unable to read configuration file\n" + e.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
