@@ -3,8 +3,13 @@ and btw Im not a programmer so don't judge the code quality
 
 *in development*
 
+<br><br>
+
+![](./images/screenshot.png)
+
 ---
 
-Dependencies for building the project:\
-&nbsp; &nbsp; &nbsp; openJDK 21\
-&nbsp; &nbsp; &nbsp; maven
+- Dependencies for building the project:
+
+    - openJDK 21
+    - maven
